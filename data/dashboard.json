@@ -1,0 +1,192 @@
+{
+  "user": {
+    "name": "Salung Prastyo",
+    "firstName": "Salung",
+    "role": "Sales Operator",
+    "team": "Spark Pixel Team",
+    "teamType": "Agency"
+  },
+  "date": "6 Nov 2025",
+  "kpis": [
+    {
+      "label": "Total Revenue",
+      "value": "$20,320",
+      "suffix": "",
+      "delta": "+0,94", "deltaLabel": "last year",
+      "spark": [4, 7, 3, 8, 5, 9, 4, 10, 6, 12]
+    },
+    {
+      "label": "Total Orders",
+      "value": "10,320",
+      "suffix": "Orders",
+      "delta": "+0,94", "deltaLabel": "last year",
+      "spark": [5, 3, 8, 4, 9, 6, 3, 11, 7, 12]
+    },
+    {
+      "label": "New Customers",
+      "value": "4,305",
+      "suffix": "New Users",
+      "delta": "+0,94", "deltaLabel": "last year",
+      "spark": [3, 6, 4, 9, 5, 7, 10, 4, 8, 12]
+    },
+    {
+      "label": "Conversion Rate",
+      "value": "3.9%",
+      "suffix": "",
+      "delta": "+0,94", "deltaLabel": "last year",
+      "spark": [6, 4, 7, 3, 9, 5, 8, 10, 4, 12]
+    }
+  ],
+  "salesTrend": {
+    "totalRevenue": "$20,320",
+    "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "maxK": 60,
+    "weeks": [
+      { "newUser": 12, "existing": 6 },
+      { "newUser": 18, "existing": 8 },
+      { "newUser": 10, "existing": 5 },
+      { "newUser": 22, "existing": 10 },
+      { "newUser": 16, "existing": 7 },
+      { "newUser": 26, "existing": 12 },
+      { "newUser": 14, "existing": 6 },
+      { "newUser": 20, "existing": 9 },
+      { "newUser": 10, "existing": 5 },
+      { "newUser": 24, "existing": 11 },
+      { "newUser": 16, "existing": 8 },
+      { "newUser": 12, "existing": 6 },
+      { "newUser": 20, "existing": 9 },
+      { "newUser": 30, "existing": 14 },
+      { "newUser": 18, "existing": 8 },
+      { "newUser": 14, "existing": 7 },
+      { "newUser": 12, "existing": 6 },
+      { "newUser": 22, "existing": 10 },
+      { "newUser": 28, "existing": 13 },
+      { "newUser": 16, "existing": 8 },
+      { "newUser": 18, "existing": 9 },
+      { "newUser": 26, "existing": 12 },
+      { "newUser": 38, "existing": 18 },
+      { "newUser": 24, "existing": 11 },
+      { "newUser": 14, "existing": 7 },
+      { "newUser": 24, "existing": 11 },
+      { "newUser": 18, "existing": 8 },
+      { "newUser": 10, "existing": 5 },
+      { "newUser": 20, "existing": 10 },
+      { "newUser": 28, "existing": 13 },
+      { "newUser": 16, "existing": 8 },
+      { "newUser": 22, "existing": 10 },
+      { "newUser": 12, "existing": 6 },
+      { "newUser": 18, "existing": 9 },
+      { "newUser": 26, "existing": 12 },
+      { "newUser": 14, "existing": 7 },
+      { "newUser": 24, "existing": 11 },
+      { "newUser": 16, "existing": 8 },
+      { "newUser": 30, "existing": 14 },
+      { "newUser": 20, "existing": 9 },
+      { "newUser": 14, "existing": 7 },
+      { "newUser": 22, "existing": 10 },
+      { "newUser": 12, "existing": 6 },
+      { "newUser": 26, "existing": 12 },
+      { "newUser": 18, "existing": 8 },
+      { "newUser": 28, "existing": 13 },
+      { "newUser": 20, "existing": 10 },
+      { "newUser": 34, "existing": 16 }
+    ],
+    "tooltip": { "month": "Jun 2025", "newUser": "38k", "existing": "18k", "weekIndex": 22 }
+  },
+  "revenueBreakdown": {
+    "title": "Revenue by Category",
+    "total": "$20,320",
+    "range": "Jan 1 - Aug 30",
+    "footerStart": "1 Jan",
+    "footerEnd": "30 Jan 2025",
+    "bars": [
+      { "h": 45, "o": 10, "b": 12 },
+      { "h": 70, "o": 25, "b": 18 },
+      { "h": 55, "o": 8, "b": 10 },
+      { "h": 85, "o": 40, "b": 20 },
+      { "h": 60, "o": 15, "b": 12 },
+      { "h": 95, "o": 55, "b": 22 },
+      { "h": 50, "o": 12, "b": 10 },
+      { "h": 75, "o": 30, "b": 16 },
+      { "h": 65, "o": 20, "b": 14 },
+      { "h": 88, "o": 45, "b": 18 },
+      { "h": 42, "o": 8, "b": 10 },
+      { "h": 68, "o": 25, "b": 15 },
+      { "h": 92, "o": 50, "b": 20 },
+      { "h": 58, "o": 14, "b": 12 },
+      { "h": 78, "o": 35, "b": 16 },
+      { "h": 48, "o": 10, "b": 10 },
+      { "h": 86, "o": 42, "b": 18 },
+      { "h": 62, "o": 18, "b": 13 },
+      { "h": 72, "o": 28, "b": 15 },
+      { "h": 96, "o": 58, "b": 20 },
+      { "h": 52, "o": 12, "b": 11 },
+      { "h": 80, "o": 36, "b": 17 },
+      { "h": 66, "o": 22, "b": 14 },
+      { "h": 90, "o": 48, "b": 19 },
+      { "h": 44, "o": 9, "b": 10 },
+      { "h": 74, "o": 30, "b": 15 },
+      { "h": 84, "o": 40, "b": 18 },
+      { "h": 56, "o": 16, "b": 12 },
+      { "h": 70, "o": 26, "b": 15 },
+      { "h": 94, "o": 52, "b": 21 },
+      { "h": 60, "o": 20, "b": 13 }
+    ]
+  },
+  "transactions": [
+    {
+      "id": "#04910",
+      "customer": "Ryan Korsgaard",
+      "product": "Ergo Office Chair",
+      "status": "Success",
+      "qty": 12,
+      "unitPrice": "$3,450",
+      "totalRevenue": "$41,400"
+    },
+    {
+      "id": "#04911",
+      "customer": "Madelyn Lubin",
+      "product": "Sunset Desk 02",
+      "status": "Success",
+      "qty": 20,
+      "unitPrice": "$2,980",
+      "totalRevenue": "$89,200"
+    },
+    {
+      "id": "#04912",
+      "customer": "Abram Bergson",
+      "product": "Eco Bookshelf",
+      "status": "Pending",
+      "qty": 22,
+      "unitPrice": "$1,750",
+      "totalRevenue": "$75,900"
+    },
+    {
+      "id": "#04913",
+      "customer": "Phillip Mango",
+      "product": "Green Leaf Desk",
+      "status": "Refunded",
+      "qty": 24,
+      "unitPrice": "$1,950",
+      "totalRevenue": "$19,500"
+    },
+    {
+      "id": "#04914",
+      "customer": "Kaylee Vetrovs",
+      "product": "Cloud Sofa Mini",
+      "status": "Success",
+      "qty": 8,
+      "unitPrice": "$4,120",
+      "totalRevenue": "$32,960"
+    },
+    {
+      "id": "#04915",
+      "customer": "Omar Dias",
+      "product": "Maple Nightstand",
+      "status": "Pending",
+      "qty": 16,
+      "unitPrice": "$1,280",
+      "totalRevenue": "$20,480"
+    }
+  ]
+}
