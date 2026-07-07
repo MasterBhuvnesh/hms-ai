@@ -132,7 +132,10 @@ export function PixelChart({
 
       <div className="mt-3 flex items-center justify-between pl-10 font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
         {months.map((m, i) => (
-          <span key={m} className="flex items-center gap-3">
+          <span
+            key={m}
+            className={`items-center gap-3 ${i % 2 ? "hidden sm:flex" : "flex"}`}
+          >
             {m}
             {i < months.length - 1 && <span className="text-foreground/20">•</span>}
           </span>

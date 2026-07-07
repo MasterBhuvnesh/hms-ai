@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { InboxIcon, Notification01Icon, Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ThemeToggle } from "@/components/dashboard/theme-toggle";
 import data from "@/data/dashboard.json";
@@ -21,12 +22,17 @@ export function Shell({
       <Sidebar active={active} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b-2 border-comp-border px-6">
-          <nav className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Dashboard</span>
-            <span className="text-muted-foreground">›</span>
-            <span className="font-medium">{breadcrumb}</span>
-          </nav>
+        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b-2 border-comp-border px-4 md:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <MobileNav>
+              <Sidebar active={active} className="flex h-full" />
+            </MobileNav>
+            <nav className="flex items-center gap-2 text-sm whitespace-nowrap">
+              <span className="hidden text-muted-foreground sm:inline">Dashboard</span>
+              <span className="hidden text-muted-foreground sm:inline">›</span>
+              <span className="truncate font-medium">{breadcrumb}</span>
+            </nav>
+          </div>
           <div className="flex items-center gap-2">
             <div className="relative hidden md:block">
               <HugeiconsIcon
@@ -42,11 +48,11 @@ export function Shell({
                 ⌘ K
               </kbd>
             </div>
-            <Button variant="ghost" size="icon-lg" className="border-2 border-comp-border" aria-label="Notifications">
+            <Button variant="ghost" size="icon-lg" className="hidden border-2 border-comp-border sm:inline-flex" aria-label="Notifications">
               <HugeiconsIcon icon={Notification01Icon} size={18} />
             </Button>
             <ThemeToggle />
-            <Button variant="ghost" size="icon-lg" className="border-2 border-comp-border" aria-label="Inbox">
+            <Button variant="ghost" size="icon-lg" className="hidden border-2 border-comp-border sm:inline-flex" aria-label="Inbox">
               <HugeiconsIcon icon={InboxIcon} size={18} />
             </Button>
             <Image
@@ -59,7 +65,7 @@ export function Shell({
           </div>
         </header>
 
-        <main className="flex-1 space-y-4 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
     </div>
   );

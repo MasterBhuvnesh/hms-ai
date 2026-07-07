@@ -63,12 +63,17 @@ const sections: { title: string; items: NavItem[] }[] = [
   },
 ];
 
-export function Sidebar({ active = "Dashboard" }: { active?: string }) {
+export function Sidebar({
+  active = "Dashboard",
+  className = "hidden lg:flex",
+}: {
+  active?: string;
+  className?: string;
+}) {
   return (
-    <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-sidebar">
+    <aside className={`${className} w-64 shrink-0 flex-col border-r bg-sidebar`}>
       <div className="p-4">
         <button className="flex w-full items-center gap-2.5 rounded-lg border bg-card p-2.5 shadow-xs">
-
           <span className="flex-1 text-left">
             <span className="block text-[11px] text-muted-foreground">
               {data.user.teamType}
