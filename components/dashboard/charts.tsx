@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 const ROWS = 20;
 
@@ -161,6 +166,67 @@ export function RevenueBars({ bars }: { bars: { h: number; o: number; b: number 
         <Bar dataKey="revenue" stackId="d" fill="var(--color-revenue)" radius={[2, 2, 0, 0]} />
         <Bar dataKey="above" stackId="d" fill="var(--color-revenue)" fillOpacity={0.15} radius={[2, 2, 0, 0]} />
       </BarChart>
+    </ChartContainer>
+  );
+}
+
+const monthlyConfig = {
+  revenue: {
+    label: "This Year",
+    color: "color-mix(in oklab, var(--foreground) 70%, transparent)",
+  },
+  lastYear: {
+    label: "Last Year",
+    color: "color-mix(in oklab, var(--foreground) 30%, transparent)",
+  },
+} satisfies ChartConfig;
+
+export function MonthlyArea({
+  data,
+}: {
+  data: { month: string; revenue: number; lastYear: number }[];
+}) {
+  return (
+    <ChartContainer config={monthlyConfig} className="aspect-auto h-64 w-full">
+      <AreaChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
+        <defs>
+          <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-revenue)" stopOpacity={0.25} />
+            <stop offset="95%" stopColor="var(--color-revenue)" stopOpacity={0.02} />
+          </linearGradient>
+          <linearGradient id="fillLastYear" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-lastYear)" stopOpacity={0.25} />
+            <stop offset="95%" stopColor="var(--color-lastYear)" stopOpacity={0.02} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid
+          vertical={false}
+          strokeDasharray="4 4"
+          stroke="color-mix(in oklab, var(--foreground) 10%, transparent)"
+        />
+        <XAxis
+          dataKey="month"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fontSize: 10, fill: "var(--muted-foreground)", fontFamily: "var(--font-geist-mono)" }}
+        />
+        <YAxis hide />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Area
+          dataKey="lastYear"
+          type="natural"
+          stroke="var(--color-lastYear)"
+          strokeWidth={2}
+          fill="url(#fillLastYear)"
+        />
+        <Area
+          dataKey="revenue"
+          type="natural"
+          stroke="var(--color-revenue)"
+          strokeWidth={2}
+          fill="url(#fillRevenue)"
+        />
+      </AreaChart>
     </ChartContainer>
   );
 }

@@ -28,7 +28,7 @@ above or below the inner card — never inside it.
 
 | Layer | Classes |
 |---|---|
-| Tray | `gap-0 bg-muted/50 p-1 ring-0 shadow-sm` on `<Card>` (base Card gives `rounded-xl`) |
+| Tray | `gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted` on `<Card>` (base Card gives `rounded-xl`; dark mode uses full-strength muted so the tray stays visible against the page) |
 | Inner card | `rounded-xl bg-card p-4` (add `flex-1` when the card must fill grid-row height) |
 | Tray strip | `px-4 py-2.5` (aligns its content with the inner card's `p-4` content) |
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import type { IconSvgElement } from "@hugeicons/react";
 import {
@@ -21,48 +22,48 @@ import {
 } from "@hugeicons/core-free-icons";
 import data from "@/data/dashboard.json";
 
-type NavItem = { label: string; icon: IconSvgElement; active?: boolean };
+type NavItem = { label: string; icon: IconSvgElement; href?: string };
 
 const sections: { title: string; items: NavItem[] }[] = [
   {
     title: "Main Menu",
     items: [
-      { label: "Dashboard", icon: Home01Icon, active: true },
-      { label: "Products", icon: PackageIcon },
-      { label: "Transactions", icon: Invoice01Icon },
-      { label: "Reports & Analytics", icon: Analytics01Icon },
-      { label: "Messages", icon: Message01Icon },
-      { label: "Team Performance", icon: UserGroupIcon },
-      { label: "Campaigns", icon: Megaphone01Icon },
+      { label: "Dashboard", icon: Home01Icon, href: "/" },
+      { label: "Products", icon: PackageIcon, href: "/products" },
+      { label: "Transactions", icon: Invoice01Icon, href: "/transactions" },
+      { label: "Reports & Analytics", icon: Analytics01Icon, href: "/reports" },
+      { label: "Messages", icon: Message01Icon, href: "/messages" },
+      { label: "Team Performance", icon: UserGroupIcon, href: "/team" },
+      { label: "Campaigns", icon: Megaphone01Icon, href: "/campaigns" },
     ],
   },
   {
     title: "Customers",
     items: [
-      { label: "Customer List", icon: UserMultiple02Icon },
-      { label: "Channels", icon: Share01Icon },
-      { label: "Order Management", icon: DeliveryBox01Icon },
+      { label: "Customer List", icon: UserMultiple02Icon, href: "/customers" },
+      { label: "Channels", icon: Share01Icon, href: "/channels" },
+      { label: "Order Management", icon: DeliveryBox01Icon, href: "/orders" },
     ],
   },
   {
     title: "Management",
     items: [
-      { label: "Roles & Permissions", icon: UserLock01Icon },
-      { label: "Billing & Subscription", icon: CreditCardIcon },
-      { label: "Integrations", icon: PuzzleIcon },
+      { label: "Roles & Permissions", icon: UserLock01Icon, href: "/roles" },
+      { label: "Billing & Subscription", icon: CreditCardIcon, href: "/billing" },
+      { label: "Integrations", icon: PuzzleIcon, href: "/integrations" },
     ],
   },
   {
     title: "Settings",
     items: [
-      { label: "Customer Support", icon: CustomerSupportIcon },
-      { label: "Help Center", icon: HelpCircleIcon },
-      { label: "System Settings", icon: Settings02Icon },
+      { label: "Customer Support", icon: CustomerSupportIcon, href: "/support" },
+      { label: "Help Center", icon: HelpCircleIcon, href: "/help" },
+      { label: "System Settings", icon: Settings02Icon, href: "/settings" },
     ],
   },
 ];
 
-export function Sidebar() {
+export function Sidebar({ active = "Dashboard" }: { active?: string }) {
   return (
     <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-sidebar">
       <div className="p-4">
@@ -84,17 +85,17 @@ export function Sidebar() {
             <ul className="space-y-0.5">
               {section.items.map((item) => (
                 <li key={item.label}>
-                  <a
-                    href="#"
+                  <Link
+                    href={item.href ?? "#"}
                     className={
-                      item.active
+                      item.label === active
                         ? "flex items-center gap-2.5 rounded-lg border bg-card px-2.5 py-2 text-sm font-medium shadow-xs"
                         : "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
                     }
                   >
                     <HugeiconsIcon icon={item.icon} size={18} strokeWidth={1.8} />
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

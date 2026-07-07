@@ -17,7 +17,8 @@ any element with `overflow-y-auto` gets it automatically.
 
 ```css
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 4px;  /* vertical scrollbars */
+  height: 4px; /* horizontal scrollbars */
 }
 
 ::-webkit-scrollbar-thumb {
