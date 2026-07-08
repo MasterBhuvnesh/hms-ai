@@ -32,15 +32,17 @@ export function PixelChart({
   months,
   maxK,
   year,
+  tooltipLabels,
 }: {
   weeks: Week[];
   months: string[];
   maxK: number;
   year: number;
+  tooltipLabels?: string[];
 }) {
   const [hovered, setHovered] = useState<number | null>(null);
   const kPerCell = maxK / ROWS;
-  const yLabels = Array.from({ length: 7 }, (_, i) => `${maxK - i * 10}k`);
+  const yLabels = Array.from({ length: 7 }, (_, i) => `${Math.round((maxK / 6) * (6 - i))}k`);
   const lineLeft =
     hovered === null ? "0%" : `${((hovered + 0.5) / weeks.length) * 100}%`;
   const flip = hovered !== null && hovered > weeks.length / 2;
@@ -48,6 +50,12 @@ export function PixelChart({
     hovered === null
       ? ""
       : months[Math.min(months.length - 1, Math.floor((hovered / weeks.length) * months.length))];
+  const tipLabel =
+    hovered === null
+      ? ""
+      : tooltipLabels
+        ? tooltipLabels[hovered]
+        : `${hoveredMonth} ${year}`;
 
   return (
     <div>
@@ -106,7 +114,7 @@ export function PixelChart({
                 }
               >
                 <p className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                  {hoveredMonth} {year}
+                  {tipLabel}
                 </p>
                 <div className="space-y-1 px-3 py-1.5 text-xs">
                   <p className="flex items-center gap-2 text-muted-foreground">

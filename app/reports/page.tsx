@@ -11,8 +11,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { KpiCard, MoreButton, PanelTitle } from "@/components/dashboard/cards";
-import { MonthlyArea } from "@/components/dashboard/charts";
 import { Shell } from "@/components/dashboard/shell";
+import { MonthlyRevenue } from "./monthly-revenue";
+import { products } from "@/data/mock";
 import data from "@/data/dashboard.json";
 
 const categoryShades = [
@@ -22,8 +23,8 @@ const categoryShades = [
   "bg-foreground/25",
 ];
 
-const topProducts = [...data.products.items]
-  .sort((a, b) => Number(b.sold.replace(",", "")) - Number(a.sold.replace(",", "")))
+const topProducts = [...products]
+  .sort((a, b) => Number(b.sold.replace(/,/g, "")) - Number(a.sold.replace(/,/g, "")))
   .slice(0, 5);
 
 export default function Reports() {
@@ -57,33 +58,7 @@ export default function Reports() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted xl:col-span-2">
-          <div className="flex items-center justify-between px-3 py-2">
-            <PanelTitle title="Monthly Revenue" />
-            <MoreButton />
-          </div>
-          <div className="flex-1 rounded-xl bg-card p-4">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm text-muted-foreground">
-                Revenue per month ($k) :
-                <span className="ml-2 font-mono text-2xl font-semibold tracking-tight text-foreground">
-                  {data.reports.kpis[0].value}
-                </span>
-              </p>
-              <div className="flex items-center gap-4 font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
-                <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-foreground/30" />
-                  Last Year
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-foreground/70" />
-                  This Year
-                </span>
-              </div>
-            </div>
-            <MonthlyArea data={data.reports.monthly} />
-          </div>
-        </Card>
+        <MonthlyRevenue />
 
         <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
           <div className="flex items-center justify-between px-3 py-2">

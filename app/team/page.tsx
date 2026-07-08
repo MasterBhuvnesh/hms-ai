@@ -1,22 +1,10 @@
 import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  AiMagicIcon,
-  ArrowUpDownIcon,
-  FileExportIcon,
-  PlusSignIcon,
-} from "@hugeicons/core-free-icons";
+import { AiMagicIcon, FileExportIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
 import { Shell } from "@/components/dashboard/shell";
+import { Leaderboard } from "./leaderboard";
 import data from "@/data/dashboard.json";
 
 const monthShades = ["bg-foreground", "bg-foreground/60", "bg-foreground/30"];
@@ -58,57 +46,7 @@ export default function TeamPerformance() {
       </Card>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted xl:col-span-2">
-          <div className="flex items-center justify-between px-3 py-2">
-            <PanelTitle title="Leaderboard" />
-            <MoreButton />
-          </div>
-          <div className="flex-1 overflow-hidden rounded-xl bg-card py-2">
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-14 pl-4 font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
-                    Rank
-                  </TableHead>
-                  {["Member", "Role", "Deals", "Revenue", "Attainment"].map((heading) => (
-                    <TableHead key={heading}>
-                      <span className="flex items-center gap-1 font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
-                        {heading}
-                        <HugeiconsIcon icon={ArrowUpDownIcon} size={12} />
-                      </span>
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.team.members.map((member, i) => (
-                  <TableRow key={member.name}>
-                    <TableCell className="pl-4 font-mono text-muted-foreground">
-                      #{i + 1}
-                    </TableCell>
-                    <TableCell className="font-medium">{member.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{member.role}</TableCell>
-                    <TableCell className="font-mono">{member.deals}</TableCell>
-                    <TableCell className="font-mono">{member.revenue}</TableCell>
-                    <TableCell>
-                      <span className="flex items-center gap-2.5">
-                        <span className="h-1.5 w-24 rounded-full bg-foreground/10">
-                          <span
-                            className="block h-full rounded-full bg-foreground"
-                            style={{ width: `${member.attainment}%` }}
-                          />
-                        </span>
-                        <span className="font-mono text-xs text-muted-foreground">
-                          {member.attainment}%
-                        </span>
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </Card>
+        <Leaderboard />
 
         <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
           <div className="flex items-center justify-between px-3 py-2">
