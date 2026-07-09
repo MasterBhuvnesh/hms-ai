@@ -17,12 +17,12 @@ import {
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, Th, useDataTable } from "@/components/dashboard/use-table";
-import { tickets } from "@/data/mock";
+import type { Ticket } from "@/data/mock";
 
 const priorityRank: Record<string, number> = { High: 3, Medium: 2, Low: 1 };
 
-export function TicketsTable() {
-  const t = useDataTable(tickets, {
+export function TicketsTable({ rows }: { rows: Ticket[] }) {
+  const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.customer, r.subject],
     filterField: (r) => r.status,
     sorters: {

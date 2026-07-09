@@ -17,10 +17,10 @@ import {
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, num, Th, useDataTable } from "@/components/dashboard/use-table";
-import { orders } from "@/data/mock";
+import type { Order } from "@/data/mock";
 
-export function OrdersTable() {
-  const t = useDataTable(orders, {
+export function OrdersTable({ rows }: { rows: Order[] }) {
+  const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.customer],
     filterField: (r) => r.status,
     sorters: {

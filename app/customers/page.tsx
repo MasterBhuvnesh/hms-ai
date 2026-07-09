@@ -1,10 +1,15 @@
+"use client";
+
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FileExportIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/dashboard/cards";
+import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
 import type { Kpi } from "@/components/dashboard/cards";
 import { CustomersTable } from "./customers-table";
+import { customers as customersSeed, type Customer } from "@/data/mock";
 
 const kpis: Kpi[] = [
   {
@@ -42,6 +47,8 @@ const kpis: Kpi[] = [
 ];
 
 export default function Customers() {
+  const [rows, setRows] = useState<Customer[]>(customersSeed);
+
   return (
     <Shell breadcrumb="Customer List" active="Customer List">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -51,10 +58,37 @@ export default function Customers() {
             <HugeiconsIcon icon={FileExportIcon} size={14} data-icon="inline-start" />
             Export CSV
           </Button>
-          <Button size="lg">
-            <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-            Add Customer
-          </Button>
+          <AddDialog
+            title="Add Customer"
+            submitLabel="Add Customer"
+            fields={[
+              { name: "name", label: "Name", placeholder: "Jane Cooper" },
+              { name: "email", label: "Email", placeholder: "jane@mail.com" },
+              { name: "location", label: "Location", placeholder: "Austin, TX" },
+              { name: "orders", label: "Orders", type: "number", placeholder: "0" },
+              { name: "totalSpent", label: "Total spent", type: "number", placeholder: "0" },
+              { name: "status", label: "Status", options: ["Active", "Inactive"] },
+            ]}
+            onSubmit={(v) =>
+              setRows((r) => [
+                {
+                  name: v.name,
+                  email: v.email,
+                  location: v.location,
+                  orders: Number(v.orders) || 0,
+                  totalSpent: money(v.totalSpent),
+                  status: v.status as Customer["status"],
+                },
+                ...r,
+              ])
+            }
+            trigger={
+              <Button size="lg">
+                <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
+                Add Customer
+              </Button>
+            }
+          />
         </div>
       </div>
 
@@ -64,7 +98,7 @@ export default function Customers() {
         ))}
       </div>
 
-      <CustomersTable />
+      <CustomersTable rows={rows} />
     </Shell>
   );
 }

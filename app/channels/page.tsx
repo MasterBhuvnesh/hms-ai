@@ -1,11 +1,17 @@
+"use client";
+
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
+import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
 
-const channels = [
+type Channel = { name: string; status: string; revenue: string; share: number; delta: string };
+
+const seedChannels: Channel[] = [
   {
     name: "Online Store",
     status: "Connected",
@@ -51,14 +57,41 @@ const channels = [
 ];
 
 export default function Channels() {
+  const [channels, setChannels] = useState<Channel[]>(seedChannels);
+
   return (
     <Shell breadcrumb="Channels" active="Channels">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Channels</h1>
-        <Button size="lg">
-          <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-          Add Channel
-        </Button>
+        <AddDialog
+          title="Add Channel"
+          submitLabel="Add Channel"
+          fields={[
+            { name: "name", label: "Channel name", placeholder: "Pinterest" },
+            { name: "status", label: "Status", options: ["Connected", "Disconnected"] },
+            { name: "revenue", label: "Revenue this month", type: "number", placeholder: "0" },
+            { name: "share", label: "Share %", type: "number", placeholder: "0" },
+            { name: "delta", label: "Change", placeholder: "+0,0%" },
+          ]}
+          onSubmit={(v) =>
+            setChannels((c) => [
+              ...c,
+              {
+                name: v.name,
+                status: v.status,
+                revenue: money(v.revenue),
+                share: Math.min(100, Math.max(0, Number(v.share) || 0)),
+                delta: v.delta.trim() || "+0,0%",
+              },
+            ])
+          }
+          trigger={
+            <Button size="lg">
+              <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
+              Add Channel
+            </Button>
+          }
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

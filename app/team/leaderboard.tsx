@@ -12,10 +12,10 @@ import {
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { num, Th, useDataTable } from "@/components/dashboard/use-table";
-import { members } from "@/data/mock";
+import type { Member } from "@/data/mock";
 
-export function Leaderboard() {
-  const t = useDataTable(members, {
+export function Leaderboard({ rows }: { rows: Member[] }) {
+  const t = useDataTable(rows, {
     searchFields: (r) => [r.name, r.role],
     sorters: {
       name: (r) => r.name,

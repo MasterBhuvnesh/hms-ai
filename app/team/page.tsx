@@ -1,15 +1,22 @@
+"use client";
+
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AiMagicIcon, FileExportIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
+import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
 import { Leaderboard } from "./leaderboard";
+import { members as membersSeed, type Member } from "@/data/mock";
 import data from "@/data/dashboard.json";
 
 const monthShades = ["bg-foreground", "bg-foreground/60", "bg-foreground/30"];
 
 export default function TeamPerformance() {
+  const [rows, setRows] = useState<Member[]>(membersSeed);
+
   return (
     <Shell breadcrumb="Team Performance" active="Team Performance">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -19,10 +26,39 @@ export default function TeamPerformance() {
             <HugeiconsIcon icon={FileExportIcon} size={14} data-icon="inline-start" />
             Export Report
           </Button>
-          <Button size="lg">
-            <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-            Add Member
-          </Button>
+          <AddDialog
+            title="Add Member"
+            submitLabel="Add Member"
+            fields={[
+              { name: "name", label: "Name", placeholder: "Jane Cooper" },
+              {
+                name: "role",
+                label: "Role",
+                options: ["Sales Operator", "Account Exec", "Sales Rep", "SDR"],
+              },
+              { name: "deals", label: "Deals closed", type: "number", placeholder: "0" },
+              { name: "revenue", label: "Revenue", type: "number", placeholder: "0" },
+              { name: "attainment", label: "Attainment %", type: "number", placeholder: "0" },
+            ]}
+            onSubmit={(v) =>
+              setRows((r) => [
+                {
+                  name: v.name,
+                  role: v.role as Member["role"],
+                  deals: Number(v.deals) || 0,
+                  revenue: money(v.revenue),
+                  attainment: Math.min(100, Math.max(0, Number(v.attainment) || 0)),
+                },
+                ...r,
+              ])
+            }
+            trigger={
+              <Button size="lg">
+                <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
+                Add Member
+              </Button>
+            }
+          />
         </div>
       </div>
 
@@ -46,7 +82,7 @@ export default function TeamPerformance() {
       </Card>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Leaderboard />
+        <Leaderboard rows={rows} />
 
         <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
           <div className="flex items-center justify-between px-3 py-2">

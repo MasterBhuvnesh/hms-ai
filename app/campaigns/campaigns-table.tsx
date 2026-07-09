@@ -17,10 +17,10 @@ import {
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, num, Th, useDataTable } from "@/components/dashboard/use-table";
-import { campaigns } from "@/data/mock";
+import type { Campaign } from "@/data/mock";
 
-export function CampaignsTable() {
-  const t = useDataTable(campaigns, {
+export function CampaignsTable({ rows }: { rows: Campaign[] }) {
+  const t = useDataTable(rows, {
     searchFields: (r) => [r.name, r.channel],
     filterField: (r) => r.status,
     sorters: {

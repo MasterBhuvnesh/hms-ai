@@ -1,15 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon, Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
+import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { TransactionsTable } from "@/components/dashboard/transactions-table";
 import { FilterPills, num, useDataTable } from "@/components/dashboard/use-table";
-import { transactions } from "@/data/mock";
+import { transactions as transactionsSeed, type Transaction } from "@/data/mock";
+import data from "@/data/dashboard.json";
 
 export function TransactionsView({
   title = "All Transactions",
@@ -18,7 +21,8 @@ export function TransactionsView({
   title?: string;
   showAdd?: boolean;
 }) {
-  const t = useDataTable(transactions, {
+  const [rows, setRows] = useState<Transaction[]>(transactionsSeed);
+  const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.customer, r.product],
     filterField: (r) => r.status,
     sorters: {
@@ -56,10 +60,44 @@ export function TransactionsView({
             />
           </div>
           {showAdd && (
-            <Button variant="outline">
-              <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-              Add Transaction
-            </Button>
+            <AddDialog
+              title="Add Transaction"
+              submitLabel="Add Transaction"
+              fields={[
+                { name: "customer", label: "Customer", placeholder: "Jane Cooper" },
+                { name: "product", label: "Product", placeholder: "Ergo Office Chair" },
+                { name: "qty", label: "Quantity", type: "number", placeholder: "1" },
+                { name: "unitPrice", label: "Unit price", type: "number", placeholder: "0" },
+                { name: "status", label: "Status", options: ["Success", "Pending", "Refunded"] },
+              ]}
+              onSubmit={(v) => {
+                const qty = Number(v.qty) || 1;
+                const unit = Number(v.unitPrice) || 0;
+                const maxNum = rows.reduce(
+                  (m, tx) => Math.max(m, Number(tx.id.replace(/\D/g, "")) || 0),
+                  4830,
+                );
+                setRows((r) => [
+                  {
+                    id: `#${String(maxNum + 1).padStart(5, "0")}`,
+                    customer: v.customer,
+                    product: v.product,
+                    status: v.status as Transaction["status"],
+                    qty,
+                    unitPrice: money(v.unitPrice),
+                    totalRevenue: money(String(qty * unit)),
+                    date: data.date,
+                  },
+                  ...r,
+                ]);
+              }}
+              trigger={
+                <Button variant="outline">
+                  <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
+                  Add Transaction
+                </Button>
+              }
+            />
           )}
           <MoreButton />
         </div>

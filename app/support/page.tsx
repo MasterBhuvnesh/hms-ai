@@ -1,9 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/dashboard/cards";
+import { AddDialog } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
 import { TicketsTable } from "./tickets-table";
+import { tickets as ticketsSeed, type Ticket } from "@/data/mock";
 
 const kpis = [
   {
@@ -41,14 +46,45 @@ const kpis = [
 ];
 
 export default function CustomerSupport() {
+  const [rows, setRows] = useState<Ticket[]>(ticketsSeed);
+
   return (
     <Shell breadcrumb="Customer Support" active="Customer Support">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Customer Support</h1>
-        <Button size="lg">
-          <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-          New Ticket
-        </Button>
+        <AddDialog
+          title="New Ticket"
+          submitLabel="Create Ticket"
+          fields={[
+            { name: "customer", label: "Customer", placeholder: "Jane Cooper" },
+            { name: "subject", label: "Subject", placeholder: "Payment failed on checkout" },
+            { name: "priority", label: "Priority", options: ["High", "Medium", "Low"] },
+            { name: "status", label: "Status", options: ["Open", "Pending", "Resolved"] },
+          ]}
+          onSubmit={(v) => {
+            const maxNum = rows.reduce(
+              (m, tk) => Math.max(m, Number(tk.id.replace(/\D/g, "")) || 0),
+              1000,
+            );
+            setRows((r) => [
+              {
+                id: `#T-${maxNum + 1}`,
+                customer: v.customer,
+                subject: v.subject,
+                priority: v.priority as Ticket["priority"],
+                status: v.status as Ticket["status"],
+                updated: "Now",
+              },
+              ...r,
+            ]);
+          }}
+          trigger={
+            <Button size="lg">
+              <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
+              New Ticket
+            </Button>
+          }
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -57,7 +93,7 @@ export default function CustomerSupport() {
         ))}
       </div>
 
-      <TicketsTable />
+      <TicketsTable rows={rows} />
     </Shell>
   );
 }

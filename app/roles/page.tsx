@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
@@ -12,9 +15,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
+import { AddDialog } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
 
-const roles = [
+type Role = { name: string; description: string; members: number; access: string };
+
+const seedRoles: Role[] = [
   {
     name: "Admin",
     description: "Full control over workspace, billing and settings.",
@@ -53,14 +59,43 @@ const permissions = [
 ];
 
 export default function Roles() {
+  const [roles, setRoles] = useState<Role[]>(seedRoles);
+
   return (
     <Shell breadcrumb="Roles & Permissions" active="Roles & Permissions">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Roles & Permissions</h1>
-        <Button size="lg">
-          <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-          Add Role
-        </Button>
+        <AddDialog
+          title="Add Role"
+          submitLabel="Add Role"
+          fields={[
+            { name: "name", label: "Role name", placeholder: "Analyst" },
+            { name: "description", label: "Description", placeholder: "What this role can do" },
+            { name: "members", label: "Members", type: "number", placeholder: "0" },
+            {
+              name: "access",
+              label: "Access level",
+              options: ["Full access", "Limited access", "Read only"],
+            },
+          ]}
+          onSubmit={(v) =>
+            setRoles((r) => [
+              ...r,
+              {
+                name: v.name,
+                description: v.description,
+                members: Number(v.members) || 0,
+                access: v.access,
+              },
+            ])
+          }
+          trigger={
+            <Button size="lg">
+              <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
+              Add Role
+            </Button>
+          }
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

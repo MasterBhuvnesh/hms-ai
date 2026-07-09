@@ -1,21 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AiMagicIcon, Attachment01Icon, Search01Icon, Sent02Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { initials, MoreButton, PanelTitle } from "@/components/dashboard/cards";
-import { conversations as seedConversations, threads as seedThreads } from "@/data/mock";
-import type { ChatMessage } from "@/data/mock";
+import type { ChatMessage, Conversation } from "@/data/mock";
 
 const SUGGESTIONS = ["Send tracking link", "Share invoice copy", "Ask for a review"];
 
-export function MessagesView() {
-  const [convos, setConvos] = useState(seedConversations);
-  const [threadMap, setThreadMap] = useState<Record<number, ChatMessage[]>>(seedThreads);
-  const [activeId, setActiveId] = useState(seedConversations[0]?.id ?? 0);
+export function MessagesView({
+  convos,
+  setConvos,
+  threadMap,
+  setThreadMap,
+  activeId,
+  setActiveId,
+}: {
+  convos: Conversation[];
+  setConvos: Dispatch<SetStateAction<Conversation[]>>;
+  threadMap: Record<number, ChatMessage[]>;
+  setThreadMap: Dispatch<SetStateAction<Record<number, ChatMessage[]>>>;
+  activeId: number;
+  setActiveId: Dispatch<SetStateAction<number>>;
+}) {
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
 
