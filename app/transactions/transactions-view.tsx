@@ -11,8 +11,16 @@ import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { TransactionsTable } from "@/components/dashboard/transactions-table";
 import { FilterPills, num, useDataTable } from "@/components/dashboard/use-table";
-import { transactions as transactionsSeed, type Transaction } from "@/data/mock";
+import {
+  customers,
+  products,
+  transactions as transactionsSeed,
+  type Transaction,
+} from "@/data/mock";
 import data from "@/data/dashboard.json";
+
+const customerNames = customers.map((c) => c.name);
+const productNames = products.map((p) => p.name);
 
 export function TransactionsView({
   title = "All Transactions",
@@ -64,8 +72,20 @@ export function TransactionsView({
               title="Add Transaction"
               submitLabel="Add Transaction"
               fields={[
-                { name: "customer", label: "Customer", placeholder: "Jane Cooper" },
-                { name: "product", label: "Product", placeholder: "Ergo Office Chair" },
+                {
+                  name: "customer",
+                  label: "Customer",
+                  options: customerNames,
+                  searchable: true,
+                  placeholder: "Search customers...",
+                },
+                {
+                  name: "product",
+                  label: "Product",
+                  options: productNames,
+                  searchable: true,
+                  placeholder: "Search products...",
+                },
                 { name: "qty", label: "Quantity", type: "number", placeholder: "1" },
                 { name: "unitPrice", label: "Unit price", type: "number", placeholder: "0" },
                 { name: "status", label: "Status", options: ["Success", "Pending", "Refunded"] },
