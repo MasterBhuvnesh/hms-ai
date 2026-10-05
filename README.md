@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# next-dashboard-template
+
+Reusable Next.js dashboard starter with sales, team, orders and analytics views. Use it as a base for internal tools or sample admin panels.
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript 5
+- Tailwind CSS 4
+- shadcn UI on Radix UI primitives
+- Recharts 3 for charts
+- HugeIcons + Lucide for icons
+- date-fns for dates
+- ESLint 9 with eslint-config-next
+
+## Features
+
+- Dashboard home with KPIs, sales trend, leaderboard and messages
+- Products, transactions, reports and analytics
+- Customers, channels, order management
+- Team performance with search, filter, sort and pagination
+- Campaigns, roles and permissions, billing, integrations
+- Customer support, help center, system settings
+- Shared shell with sidebar, mobile nav, theme toggle
+- Dark mode support
+- Mock data in `data/dashboard.json` and `data/mock.ts`
 
 ## Getting Started
 
-First, run the development server:
+Requirements: Node.js 20+, npm.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev     # start dev server
+npm run build   # production build
+npm run start   # run production build
+npm run lint    # run eslint
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```text
+app/                  # routes (dashboard, team, orders, products, etc.)
+  page.tsx            # dashboard home
+  team/page.tsx       # team performance example
+components/
+  dashboard/          # shell, sidebar, cards, charts, tables, dialogs
+  ui/                 # shadcn primitives
+data/
+  dashboard.json      # main dashboard seed data
+  mock.ts             # generated lists (members, tickets, invoices, threads)
+lib/                  # utilities (cn, formatting)
+public/               # static assets
+style-docs/           # UI pattern notes
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Customizing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Sidebar links: `components/dashboard/sidebar.tsx:27`
+- Current user and team: `data/dashboard.json:2`
+- Team seed data: `data/mock.ts:281`
+- Global styles and theme tokens: `app/globals.css`
 
-## Deploy on Vercel
+## Conventions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- No emojis unless requested.
+- No em dash. Use hyphen (-) or comma.
+- Commits follow Conventional Commits, for example `feat(team): add member search`.
