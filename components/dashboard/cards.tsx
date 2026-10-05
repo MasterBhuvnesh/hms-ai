@@ -32,23 +32,23 @@ export function MoreButton() {
 
 const statusStyles: Record<string, { badge: string; dot: string }> = {
   Success: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
-  Pending: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400", dot: "bg-amber-500" },
+  Pending: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-300", dot: "bg-amber-500" },
   Refunded: { badge: "border-border bg-muted text-muted-foreground", dot: "bg-muted-foreground" },
   "In Stock": { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
-  "Low Stock": { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400", dot: "bg-amber-500" },
+  "Low Stock": { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-300", dot: "bg-amber-500" },
   "Out of Stock": { badge: "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-400", dot: "bg-red-500" },
   Active: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
-  Paused: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400", dot: "bg-amber-500" },
+  Paused: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-300", dot: "bg-amber-500" },
   Ended: { badge: "border-border bg-muted text-muted-foreground", dot: "bg-muted-foreground" },
   Connected: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
   Disconnected: { badge: "border-border bg-muted text-muted-foreground", dot: "bg-muted-foreground" },
   Delivered: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
   Shipped: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
-  Processing: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400", dot: "bg-amber-500" },
+  Processing: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-300", dot: "bg-amber-500" },
   Cancelled: { badge: "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-400", dot: "bg-red-500" },
   Paid: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
   Overdue: { badge: "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-400", dot: "bg-red-500" },
-  Open: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400", dot: "bg-amber-500" },
+  Open: { badge: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/40 dark:text-amber-300", dot: "bg-amber-500" },
   Resolved: { badge: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-400", dot: "bg-emerald-500" },
 };
 
