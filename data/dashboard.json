@@ -1,8 +1,8 @@
 {
   "user": {
-    "name": "Salung Prastyo",
-    "firstName": "Salung",
-    "role": "Sales Operator",
+    "name": "Bhuvnesh Verma",
+    "firstName": "Bhuvnesh",
+    "role": "Devops Engg.",
     "team": "Spark Pixel Team",
     "teamType": "Agency"
   },
@@ -255,7 +255,7 @@
       "delta": "+12,4%", "deltaLabel": "vs last quarter"
     },
     "members": [
-      { "name": "Salung Prastyo", "role": "Sales Operator", "deals": 64, "revenue": "$48,200", "attainment": 96 },
+      { "name": "Bhuvnesh Verma", "role": "Devops Engg.", "deals": 64, "revenue": "$48,200", "attainment": 96 },
       { "name": "Aditi Rao", "role": "Account Exec", "deals": 58, "revenue": "$41,600", "attainment": 91 },
       { "name": "Jonas Weber", "role": "Sales Rep", "deals": 53, "revenue": "$38,900", "attainment": 88 },
       { "name": "Mei Lin", "role": "Account Exec", "deals": 47, "revenue": "$33,400", "attainment": 84 },

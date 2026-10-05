@@ -21,8 +21,8 @@ sectioned nav in the middle, and a profile card pinned to the bottom with a fade
 │   ...      (scrolls) │
 │ ░░░░░░░░░░░░░░░░░░░░ │ ← scrim: nav fades out above the profile card
 │ ┌──────────────────┐ │
-│ │ ◉ Salung Prastyo │ │ ← profile card (avatar + name + role, no status dot, no icon)
-│ │   Sales Operator │ │
+│ │ ◉ Bhuvnesh Verma │ │ ← profile card (avatar + name + role, no status dot, no icon)
+│ │   Devops Engg. │ │
 │ └──────────────────┘ │
 └──────────────────────┘
 ```
@@ -112,8 +112,8 @@ const sections: { title: string; items: NavItem[] }[] = [
     <button className="flex w-full items-center gap-2.5 rounded-lg border bg-card p-2.5 shadow-xs">
       <Image src="/avatar.png" alt="User" width={36} height={36} className="size-9 rounded-full object-cover" />
       <span className="flex-1 text-left">
-        <span className="block text-sm font-semibold">Salung Prastyo</span>
-        <span className="block text-[11px] text-muted-foreground">Sales Operator</span>
+        <span className="block text-sm font-semibold">Bhuvnesh Verma</span>
+        <span className="block text-[11px] text-muted-foreground">Devops Engg.</span>
       </span>
     </button>
   </div>

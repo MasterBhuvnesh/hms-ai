@@ -129,7 +129,7 @@ export type Ticket = {
 
 export type Member = {
   name: string;
-  role: "Sales Operator" | "Account Exec" | "Sales Rep" | "SDR";
+  role: "Devops Engg." | "Account Exec" | "Sales Rep" | "SDR";
   deals: number;
   revenue: string;
   attainment: number;
@@ -279,7 +279,7 @@ const UPDATED: readonly string[] = [
 const ROLES: readonly Member["role"][] = ["Account Exec", "Sales Rep", "SDR"];
 
 const MEMBER_NAMES: readonly string[] = [
-  "Salung Prastyo", "Aditi Rao", "Jonas Weber", "Mei Lin", "Tom Okafor",
+  "Bhuvnesh Verma", "Aditi Rao", "Jonas Weber", "Mei Lin", "Tom Okafor",
   "Sara Kim", "Leo Martins", "Nina Petrova", "Diego Alvarez", "Hana Suzuki",
   "Lucas Silva", "Emma Johansson", "Noah Meyer", "Amara Okeke", "Daniel Park",
   "Henrik Larsen", "Carlos Mendez", "Oscar Lindqvist", "Grace Wong", "Zara Malik",
@@ -524,8 +524,8 @@ for (let i = 0; i < 42; i++) {
 }
 
 export const members: Member[] = MEMBER_NAMES.map((name) => {
-  const isLead = name === "Salung Prastyo";
-  const role: Member["role"] = isLead ? "Sales Operator" : pick(ROLES);
+  const isLead = name === "Bhuvnesh Verma";
+  const role: Member["role"] = isLead ? "Devops Engg." : pick(ROLES);
   const revenue = isLead ? 52000 : randInt(150, 490) * 100; // 15000..49000, lead tops all
   const deals = Math.round(revenue / 760);
   const attainment = isLead ? 96 : randInt(45, 94);

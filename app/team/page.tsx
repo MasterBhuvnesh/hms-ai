@@ -34,7 +34,7 @@ export default function TeamPerformance() {
               {
                 name: "role",
                 label: "Role",
-                options: ["Sales Operator", "Account Exec", "Sales Rep", "SDR"],
+                options: ["Devops Engg.", "Account Exec", "Sales Rep", "SDR"],
               },
               { name: "deals", label: "Deals closed", type: "number", placeholder: "0" },
               { name: "revenue", label: "Revenue", type: "number", placeholder: "0" },

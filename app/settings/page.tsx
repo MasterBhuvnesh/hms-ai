@@ -55,7 +55,7 @@ export default function SystemSettings() {
               <label htmlFor="profile-name" className={labelClass}>
                 Name
               </label>
-              <Input id="profile-name" defaultValue="Salung Prastyo" className={inputClass} />
+              <Input id="profile-name" defaultValue="Bhuvnesh Verma" className={inputClass} />
             </div>
             <div className="space-y-2">
               <label htmlFor="profile-email" className={labelClass}>
