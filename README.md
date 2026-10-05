@@ -2,6 +2,16 @@
 
 Reusable Next.js dashboard starter with sales, team, orders and analytics views. Use it as a base for internal tools or sample admin panels.
 
+## Screenshots
+
+### Light mode
+
+![Dashboard light mode](public/screenshots/light.png)
+
+### Dark mode
+
+![Dashboard dark mode](public/screenshots/dark.png)
+
 ## Tech Stack
 
 - Next.js 16 (App Router)
