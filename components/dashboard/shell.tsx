@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ThemeToggle } from "@/components/dashboard/theme-toggle";
+import { AiAssistant } from "@/components/dashboard/ai-assistant";
 import data from "@/data/dashboard.json";
 
 export function Shell({
@@ -67,6 +68,7 @@ export function Shell({
 
         <main className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
+      <AiAssistant />
     </div>
   );
 }
