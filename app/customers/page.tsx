@@ -60,6 +60,7 @@ export default function Customers() {
             Export CSV
           </Button>
           <AddDialog
+            href="/customers"
             title="Register Patient"
             submitLabel="Register Patient"
             fields={[

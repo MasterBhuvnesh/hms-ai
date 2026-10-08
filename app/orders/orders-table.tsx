@@ -123,6 +123,7 @@ export function OrdersTable({ rows, onChange }: { rows: Appointment[]; onChange:
                         Brief
                       </Button>
                       <RowActions
+                        href="/orders"
                         label={a.id}
                         onEdit={() => setEditRow(a)}
                         onDelete={() => setDeleteRow(a)}

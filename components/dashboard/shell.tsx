@@ -7,6 +7,8 @@ import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ThemeToggle } from "@/components/dashboard/theme-toggle";
 import { AiAssistant } from "@/components/dashboard/ai-assistant";
+import { AccessGate } from "@/components/dashboard/access-gate";
+import { ACTIVE_HREFS } from "@/lib/permissions";
 import data from "@/data/dashboard.json";
 
 export function Shell({
@@ -66,7 +68,9 @@ export function Shell({
           </div>
         </header>
 
-        <main className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">{children}</main>
+        <main className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">
+          <AccessGate href={ACTIVE_HREFS[active] ?? "/"}>{children}</AccessGate>
+        </main>
       </div>
       <AiAssistant />
     </div>

@@ -118,6 +118,7 @@ export function CampaignsTable({
                 <TableCell className="font-mono">{campaign.coverage}</TableCell>
                 <TableCell className="pr-4 text-right">
                   <RowActions
+                    href="/campaigns"
                     label={campaign.name}
                     onEdit={() => setEditKey(campaign.name)}
                     onDelete={() => setDeleteKey(campaign.name)}

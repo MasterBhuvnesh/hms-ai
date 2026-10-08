@@ -41,11 +41,13 @@ export function TransactionsTable<T extends Transaction>({
   sort,
   onEdit,
   onDelete,
+  href,
 }: {
   transactions: T[];
   sort?: { sortKey: string | null; toggleSort: (key: string) => void };
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
+  href?: string;
 }) {
   return (
     <Table>
@@ -96,6 +98,7 @@ export function TransactionsTable<T extends Transaction>({
               <TableCell className="pr-4 text-right">
                 {onEdit && onDelete ? (
                   <RowActions
+                    href={href}
                     label={tx.id}
                     onEdit={() => onEdit(tx)}
                     onDelete={() => onDelete(tx)}

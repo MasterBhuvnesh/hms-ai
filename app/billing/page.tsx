@@ -178,6 +178,7 @@ export default function Billing() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Billing & Invoices</h1>
         <AddDialog
+          href="/billing"
           title="New Bill"
           submitLabel="Create Bill"
           fields={[

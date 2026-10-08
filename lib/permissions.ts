@@ -126,6 +126,64 @@ export function canAccess(href: string | undefined, role: string): boolean {
   return allowed.includes(href);
 }
 
+// Sidebar `active` label -> route href, so Shell can guard pages.
+export const ACTIVE_HREFS: Record<string, string> = {
+  Dashboard: "/",
+  Appointments: "/orders",
+  Schedule: "/schedule",
+  Patients: "/customers",
+  Triage: "/triage",
+  "Doctors & Staff": "/team",
+  "Shifts & Leaves": "/shifts",
+  Prescriptions: "/prescriptions",
+  "Lab Reports": "/lab",
+  Discharges: "/discharge",
+  Discharge: "/discharge",
+  Surgeries: "/surgeries",
+  "Beds & Wards": "/channels",
+  Pharmacy: "/products",
+  "Billing & Invoices": "/billing",
+  Payments: "/transactions",
+  "Insurance Claims": "/insurance",
+  Expenses: "/expenses",
+  "Health Campaigns": "/campaigns",
+  "Roles & Permissions": "/roles",
+  "Reports & Analytics": "/reports",
+  Messages: "/messages",
+  Integrations: "/integrations",
+  Helpdesk: "/support",
+  "Customer Support": "/support",
+  "Help Center": "/help",
+  "System Settings": "/settings",
+};
+
+// Hrefs where a role may create/update. Delete is Admin + Management only.
+const ROLE_WRITE: Record<HospitalRole, string[]> = {
+  Admin: ALL_HREFS,
+  Management: ALL_HREFS.filter((h) => h !== "/settings"),
+  Doctor: ["/orders", "/schedule", "/customers", "/triage", "/prescriptions", "/discharge", "/surgeries", "/support"],
+  Nurse: ["/customers", "/triage", "/channels", "/discharge", "/support"],
+  Receptionist: ["/orders", "/schedule", "/customers", "/support"],
+  "Billing Staff": ["/billing", "/transactions", "/insurance", "/expenses", "/support"],
+  Pharmacist: ["/products", "/support"],
+  "Lab Tech": ["/lab", "/support"],
+};
+
+export function canWrite(href: string | undefined, role: string): boolean {
+  if (!href || href === "#") return true;
+  const r = normalizeRole(role);
+  if (r === "Admin") return true;
+  if (r === "Management") return canAccess(href, r);
+  return ROLE_WRITE[r].includes(href);
+}
+
+export function canDelete(href: string | undefined, role: string): boolean {
+  if (!href || href === "#") return true;
+  const r = normalizeRole(role);
+  if (r === "Admin") return true;
+  return r === "Management" && canAccess(href, r);
+}
+
 // Dashboard sections per role.
 export type DashboardAccess = {
   kpis: string[];

@@ -116,6 +116,7 @@ export function TicketsTable({
                 <TableCell className="font-mono text-muted-foreground">{ticket.updated}</TableCell>
                 <TableCell className="pr-4 text-right">
                   <RowActions
+                    href="/support"
                     label={ticket.id}
                     onEdit={() => setEditKey(ticket.id)}
                     onDelete={() => setDeleteKey(ticket.id)}

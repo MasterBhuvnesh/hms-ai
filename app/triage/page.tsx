@@ -162,7 +162,7 @@ function TriageTable({ rows, onChange }: { rows: Triage[]; onChange: (rows: Tria
                 <TableCell><StatusBadge status={q.status} /></TableCell>
                 <TableCell className="pr-4 text-right">
                   <div className="flex justify-end">
-                    <RowActions label={q.id} onEdit={() => setEditRow(q)} onDelete={() => setDeleteRow(q)} />
+                    <RowActions label={q.id} href="/triage" onEdit={() => setEditRow(q)} onDelete={() => setDeleteRow(q)} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -233,6 +233,7 @@ export default function TriagePage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Emergency Triage Queue</h1>
         <AddDialog
+          href="/triage"
           title="Add to Queue"
           submitLabel="Add to Queue"
           fields={[

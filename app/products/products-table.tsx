@@ -132,6 +132,7 @@ export function ProductsTable({ rows, onChange }: { rows: Medicine[]; onChange: 
                   <TableCell className="font-mono">{product.sold}</TableCell>
                   <TableCell className="pr-4 text-right">
                     <RowActions
+                      href="/products"
                       label={product.name}
                       onEdit={() => setEditSku(product.sku)}
                       onDelete={() => setDeleteSku(product.sku)}

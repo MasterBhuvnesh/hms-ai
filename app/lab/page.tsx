@@ -207,7 +207,7 @@ function LabTable({ rows, onChange, onView }: { rows: LabReport[]; onChange: (ro
                     <Button variant="ghost" size="icon-sm" aria-label={`Print ${r.id}`} onClick={() => printLabReport(r)}>
                       <HugeiconsIcon icon={PrinterIcon} size={16} />
                     </Button>
-                    <RowActions label={r.id} onEdit={() => setEditRow(r)} onDelete={() => setDeleteRow(r)} />
+                    <RowActions label={r.id} href="/lab" onEdit={() => setEditRow(r)} onDelete={() => setDeleteRow(r)} />
                   </div>
                 </TableCell>
               </TableRow>

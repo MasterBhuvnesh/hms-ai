@@ -243,7 +243,7 @@ export default function SchedulePage() {
                   <TableCell className="text-muted-foreground">{a.type}</TableCell>
                   <TableCell><StatusBadge status={a.status} /></TableCell>
                   <TableCell className="pr-4 text-right">
-                    <RowActions label={a.id} onEdit={() => setEditRow(a)} onDelete={() => setDeleteRow(a)} />
+                    <RowActions href="/schedule" label={a.id} onEdit={() => setEditRow(a)} onDelete={() => setDeleteRow(a)} />
                   </TableCell>
                 </TableRow>
               ))}

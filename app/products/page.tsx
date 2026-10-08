@@ -30,6 +30,7 @@ export default function Products() {
             Export CSV
           </Button>
           <AddDialog
+            href="/products"
             title="Add Medicine"
             submitLabel="Add Medicine"
             fields={[

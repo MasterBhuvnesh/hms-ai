@@ -72,6 +72,7 @@ export function TransactionsView({
           </div>
           {showAdd && (
             <AddDialog
+              href="/transactions"
               title="Add Payment"
               submitLabel="Add Payment"
               fields={[
@@ -131,6 +132,7 @@ export function TransactionsView({
           sort={t}
           onEdit={setEditRow}
           onDelete={setDeleteRow}
+          href="/transactions"
         />
       </div>
       <TablePagination

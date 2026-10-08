@@ -115,6 +115,7 @@ export function CustomersTable({ rows, onChange }: { rows: Patient[]; onChange: 
                   </TableCell>
                   <TableCell className="pr-4 text-right">
                     <RowActions
+                      href="/customers"
                       label={p.name}
                       onEdit={() => setEditRow(p)}
                       onDelete={() => setDeleteRow(p)}

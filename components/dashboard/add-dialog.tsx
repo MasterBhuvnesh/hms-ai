@@ -21,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCurrentRole } from "@/components/dashboard/use-current-role";
+import { canWrite } from "@/lib/permissions";
 
 export type Field = {
   name: string;
@@ -111,13 +113,18 @@ export function AddDialog({
   fields,
   onSubmit,
   submitLabel = "Add",
+  href,
 }: {
   title: string;
   trigger: ReactNode;
   fields: Field[];
   onSubmit: (values: Record<string, string>) => void;
   submitLabel?: string;
+  /** page href, e.g. "/customers" — hides the trigger for read-only roles */
+  href?: string;
 }) {
+  const role = useCurrentRole();
+  if (href && !canWrite(href, role)) return null;
   const initial = () =>
     Object.fromEntries(
       fields.map((f) => [f.name, f.options && !f.searchable ? f.options[0] : ""]),

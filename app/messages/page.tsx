@@ -24,6 +24,7 @@ export default function Messages() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Patient Messages</h1>
         <AddDialog
+          href="/messages"
           title="New Message to Patient"
           submitLabel="Start Conversation"
           fields={[

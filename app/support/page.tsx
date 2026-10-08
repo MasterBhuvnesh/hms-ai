@@ -65,6 +65,7 @@ export default function HospitalHelpdesk() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Helpdesk</h1>
         <AddDialog
+          href="/support"
           title="New Ticket"
           submitLabel="Create Ticket"
           fields={[

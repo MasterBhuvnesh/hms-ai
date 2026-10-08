@@ -97,7 +97,7 @@ function ExpensesTable({ rows, onChange }: { rows: Expense[]; onChange: (rows: E
                   <StatusBadge status={e.status} />
                 </TableCell>
                 <TableCell className="pr-4 text-right">
-                  <RowActions label={e.id} onEdit={() => setEditRow(e)} onDelete={() => setDeleteRow(e)} />
+                  <RowActions href="/expenses" label={e.id} onEdit={() => setEditRow(e)} onDelete={() => setDeleteRow(e)} />
                 </TableCell>
               </TableRow>
             ))}
@@ -173,6 +173,7 @@ export default function ExpensesPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Hospital Expenses</h1>
         <AddDialog
+          href="/expenses"
           title="Add Expense"
           submitLabel="Add Expense"
           fields={[

@@ -58,6 +58,7 @@ export function InvoicesTable({ rows, onChange }: { rows: Bill[]; onChange: (row
                 </TableCell>
                 <TableCell className="pr-4 text-right">
                   <RowActions
+                    href="/billing"
                     label={bill.id}
                     onEdit={() => setEditRow(bill)}
                     onDelete={() => setDeleteRow(bill)}

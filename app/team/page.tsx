@@ -33,6 +33,7 @@ export default function TeamPerformance() {
             Export Report
           </Button>
           <AddDialog
+            href="/team"
             title="Add Staff"
             submitLabel="Add Staff"
             fields={[

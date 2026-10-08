@@ -54,6 +54,7 @@ export default function OrderManagement() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Appointments</h1>
         <AddDialog
+          href="/orders"
           title="Book Appointment"
           submitLabel="Book Appointment"
           fields={[

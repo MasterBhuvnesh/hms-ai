@@ -88,7 +88,7 @@ function RosterTable({ rows, onChange }: { rows: StaffMember[]; onChange: (rows:
                   <StatusBadge status={s.status} />
                 </TableCell>
                 <TableCell className="pr-4 text-right">
-                  <RowActions label={s.name} onEdit={() => setEditRow(s)} onDelete={() => setDeleteRow(s)} />
+                  <RowActions href="/shifts" label={s.name} onEdit={() => setEditRow(s)} onDelete={() => setDeleteRow(s)} />
                 </TableCell>
               </TableRow>
             ))}
@@ -231,7 +231,7 @@ function LeavesTable({
                     ) : (
                       <span className="font-mono text-xs text-muted-foreground">Done</span>
                     )}
-                    <RowActions label={l.id} onEdit={() => setEditRow(l)} onDelete={() => setDeleteRow(l)} />
+                    <RowActions href="/shifts" label={l.id} onEdit={() => setEditRow(l)} onDelete={() => setDeleteRow(l)} />
                   </div>
                 </TableCell>
               </TableRow>

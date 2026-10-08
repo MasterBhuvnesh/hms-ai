@@ -98,6 +98,7 @@ export default function Roles() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Roles & Permissions</h1>
         <AddDialog
+          href="/roles"
           title="Add Role"
           submitLabel="Add Role"
           fields={[
@@ -144,6 +145,7 @@ export default function Roles() {
             <div className="flex items-center justify-between px-4 py-2.5">
               <span className="text-xs text-muted-foreground">{role.access}</span>
               <RowActions
+                href="/roles"
                 label={role.name}
                 onEdit={() => setEditName(role.name)}
                 onDelete={() => setDeleteName(role.name)}

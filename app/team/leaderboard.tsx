@@ -88,6 +88,7 @@ export function Leaderboard({ rows, onChange }: { rows: StaffMember[]; onChange:
                   </TableCell>
                   <TableCell className="pr-4 text-right">
                     <RowActions
+                      href="/team"
                       label={m.name}
                       onEdit={() => setEditRow(m)}
                       onDelete={() => setDeleteRow(m)}

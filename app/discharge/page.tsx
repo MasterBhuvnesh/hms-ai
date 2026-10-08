@@ -143,7 +143,7 @@ function DischargesTable({ rows, onChange, onView, stages }: { rows: Discharge[]
                     <Button variant="ghost" size="icon-sm" aria-label={`Print ${d.id}`} onClick={() => printDischarge(d)}>
                       <HugeiconsIcon icon={PrinterIcon} size={16} />
                     </Button>
-                    <RowActions label={d.id} onEdit={() => setEditRow(d)} onDelete={() => setDeleteRow(d)} />
+                    <RowActions label={d.id} href="/discharge" onEdit={() => setEditRow(d)} onDelete={() => setDeleteRow(d)} />
                   </div>
                 </TableCell>
               </TableRow>

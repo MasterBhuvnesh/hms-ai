@@ -27,6 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Field } from "@/components/dashboard/add-dialog";
+import { useCurrentRole } from "@/components/dashboard/use-current-role";
+import { canDelete, canWrite } from "@/lib/permissions";
 
 /** Controlled edit dialog. Same field API as AddDialog, prefilled via `initial`. */
 export function EditDialog({
@@ -157,16 +159,23 @@ export function DeleteConfirm({
   );
 }
 
-/** Row overflow menu with Edit / Delete. Replaces dead action buttons. */
+/** Row overflow menu with Edit / Delete. Items hide per role unless `href` is omitted. */
 export function RowActions({
   label,
   onEdit,
   onDelete,
+  href,
 }: {
   label: string;
   onEdit: () => void;
   onDelete: () => void;
+  /** page href, e.g. "/customers" — gates items by role when provided */
+  href?: string;
 }) {
+  const role = useCurrentRole();
+  const showEdit = href ? canWrite(href, role) : true;
+  const showDelete = href ? canDelete(href, role) : true;
+  if (!showEdit && !showDelete) return null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -175,10 +184,12 @@ export function RowActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onSelect={onEdit}>Edit</DropdownMenuItem>
-        <DropdownMenuItem variant="destructive" onSelect={onDelete}>
-          Delete
-        </DropdownMenuItem>
+        {showEdit && <DropdownMenuItem onSelect={onEdit}>Edit</DropdownMenuItem>}
+        {showDelete && (
+          <DropdownMenuItem variant="destructive" onSelect={onDelete}>
+            Delete
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

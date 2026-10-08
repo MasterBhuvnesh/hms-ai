@@ -89,7 +89,7 @@ function BedsTable({ rows, onChange }: { rows: Bed[]; onChange: (rows: Bed[]) =>
                 <TableCell><StatusBadge status={b.status} /></TableCell>
                 <TableCell className="pr-4 text-right">
                   <div className="flex justify-end">
-                    <RowActions label={b.id} onEdit={() => setEditRow(b)} onDelete={() => setDeleteRow(b)} />
+                    <RowActions label={b.id} href="/channels" onEdit={() => setEditRow(b)} onDelete={() => setDeleteRow(b)} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -226,6 +226,7 @@ export default function BedsPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Beds &amp; Wards</h1>
         <AddDialog
+          href="/channels"
           title="Add Bed"
           submitLabel="Add Bed"
           fields={[

@@ -58,6 +58,7 @@ export default function HealthCampaigns() {
             Export
           </Button>
           <AddDialog
+            href="/campaigns"
             title="New Drive"
             submitLabel="Create Drive"
             fields={[

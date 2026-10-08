@@ -150,7 +150,7 @@ function ClaimsTable({
                     <Button variant="ghost" size="sm" onClick={() => setViewRow(c)}>
                       View
                     </Button>
-                    <RowActions label={c.id} onEdit={() => setEditRow(c)} onDelete={() => setDeleteRow(c)} />
+                    <RowActions href="/insurance" label={c.id} onEdit={() => setEditRow(c)} onDelete={() => setDeleteRow(c)} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -284,6 +284,7 @@ export default function InsurancePage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Insurance / TPA Claims</h1>
         <AddDialog
+          href="/insurance"
           title="New Claim"
           submitLabel="New Claim"
           fields={[

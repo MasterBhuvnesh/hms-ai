@@ -124,7 +124,7 @@ function PrescriptionsTable({ rows, onView, onEdit, onDelete }: { rows: Prescrip
                     <Button variant="ghost" size="icon-sm" aria-label={`Print ${rx.id}`} onClick={() => printPrescription(rx)}>
                       <HugeiconsIcon icon={PrinterIcon} size={16} />
                     </Button>
-                    <RowActions label={rx.id} onEdit={() => onEdit(rx)} onDelete={() => onDelete(rx)} />
+                    <RowActions label={rx.id} href="/prescriptions" onEdit={() => onEdit(rx)} onDelete={() => onDelete(rx)} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -148,6 +148,7 @@ export default function PrescriptionsPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Prescriptions</h1>
         <AddDialog
+          href="/prescriptions"
           title="New Prescription"
           submitLabel="Create Prescription"
           fields={[

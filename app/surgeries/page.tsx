@@ -284,7 +284,7 @@ function SurgeriesTable({ rows, onChange }: { rows: Surgery[]; onChange: (rows: 
                 <TableCell className="font-mono whitespace-nowrap">{s.date} - {s.time}</TableCell>
                 <TableCell><StatusBadge status={s.status} /></TableCell>
                 <TableCell className="pr-4 text-right">
-                  <RowActions label={s.id} onEdit={() => setEditRow(s)} onDelete={() => setDeleteRow(s)} />
+                  <RowActions href="/surgeries" label={s.id} onEdit={() => setEditRow(s)} onDelete={() => setDeleteRow(s)} />
                 </TableCell>
               </TableRow>
             ))}
@@ -358,6 +358,7 @@ export default function SurgeriesPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">OT Schedule</h1>
         <AddDialog
+          href="/surgeries"
           title="Book Surgery"
           submitLabel="Book Surgery"
           fields={[
