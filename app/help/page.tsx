@@ -22,7 +22,7 @@ const faqs = [
       "Open System Settings, pick a plan under Team & Workspace, and the change applies at the start of the next billing cycle.",
   },
   {
-    question: "Can I export my sales data?",
+    question: "Can I export my hospital data?",
     answer:
       "Yes. Every table page has an Export CSV button in the title row that downloads the current view.",
   },

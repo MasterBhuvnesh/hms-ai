@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MoreHorizontalIcon, Search01Icon } from "@hugeicons/core-free-icons";
-import { Button } from "@/components/ui/button";
+import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -15,13 +15,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
+import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, Th, useDataTable } from "@/components/dashboard/use-table";
 import type { Ticket } from "@/data/mock";
 
 const priorityRank: Record<string, number> = { High: 3, Medium: 2, Low: 1 };
 
-export function TicketsTable({ rows }: { rows: Ticket[] }) {
+export function TicketsTable({
+  rows,
+  onChange,
+}: {
+  rows: Ticket[];
+  onChange: (rows: Ticket[]) => void;
+}) {
+  const [editKey, setEditKey] = useState<string | null>(null);
+  const [deleteKey, setDeleteKey] = useState<string | null>(null);
+  const editing = rows.find((r) => r.id === editKey) ?? null;
+  const deleting = rows.find((r) => r.id === deleteKey) ?? null;
   const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.customer, r.subject],
     filterField: (r) => r.status,
@@ -38,7 +49,7 @@ export function TicketsTable({ rows }: { rows: Ticket[] }) {
   return (
     <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
-        <PanelTitle title="Tickets" />
+        <PanelTitle title="Helpdesk Tickets" />
         <div className="flex items-center gap-2">
           <FilterPills
             options={["All", "Open", "Pending", "Resolved"]}
@@ -54,7 +65,7 @@ export function TicketsTable({ rows }: { rows: Ticket[] }) {
             <Input
               value={t.query}
               onChange={(e) => t.setQuery(e.target.value)}
-              placeholder="Search tickets..."
+              placeholder="Search helpdesk tickets..."
               className="h-8 w-56 rounded-lg bg-muted/40 pl-8 shadow-none"
             />
           </div>
@@ -69,7 +80,7 @@ export function TicketsTable({ rows }: { rows: Ticket[] }) {
                 <Checkbox aria-label="Select all" />
               </TableHead>
               <Th label="ID" k="id" sort={t} />
-              <Th label="Customer" k="customer" sort={t} />
+              <Th label="Patient / Ward" k="customer" sort={t} />
               <Th label="Subject" k="subject" sort={t} />
               <Th label="Priority" k="priority" sort={t} />
               <Th label="Status" k="status" sort={t} />
@@ -104,9 +115,11 @@ export function TicketsTable({ rows }: { rows: Ticket[] }) {
                 </TableCell>
                 <TableCell className="font-mono text-muted-foreground">{ticket.updated}</TableCell>
                 <TableCell className="pr-4 text-right">
-                  <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${ticket.id}`}>
-                    <HugeiconsIcon icon={MoreHorizontalIcon} size={16} />
-                  </Button>
+                  <RowActions
+                    label={ticket.id}
+                    onEdit={() => setEditKey(ticket.id)}
+                    onDelete={() => setDeleteKey(ticket.id)}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -119,6 +132,51 @@ export function TicketsTable({ rows }: { rows: Ticket[] }) {
         total={t.total}
         onPageChange={t.setPage}
         onPageSizeChange={t.setPageSize}
+      />
+      {editing && (
+        <EditDialog
+          open={editKey !== null}
+          onOpenChange={(o) => {
+            if (!o) setEditKey(null);
+          }}
+          title={`Edit ${editing.id}`}
+          fields={[
+            { name: "customer", label: "Patient / Ward" },
+            { name: "subject", label: "Subject" },
+            { name: "priority", label: "Priority", options: ["High", "Medium", "Low"] },
+            { name: "status", label: "Status", options: ["Open", "Pending", "Resolved"] },
+          ]}
+          initial={{
+            customer: editing.customer,
+            subject: editing.subject,
+            priority: editing.priority,
+            status: editing.status,
+          }}
+          onSave={(v) =>
+            onChange(
+              rows.map((r) =>
+                r.id === editing.id
+                  ? {
+                      ...r,
+                      customer: v.customer,
+                      subject: v.subject,
+                      priority: v.priority as Ticket["priority"],
+                      status: v.status as Ticket["status"],
+                      updated: "Now",
+                    }
+                  : r,
+              ),
+            )
+          }
+        />
+      )}
+      <DeleteConfirm
+        open={deleteKey !== null}
+        onOpenChange={(o) => {
+          if (!o) setDeleteKey(null);
+        }}
+        title={deleting?.id ?? "ticket"}
+        onConfirm={() => onChange(rows.filter((r) => r.id !== deleteKey))}
       />
     </Card>
   );

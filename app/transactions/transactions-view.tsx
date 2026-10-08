@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
 import { AddDialog, money } from "@/components/dashboard/add-dialog";
+import { DeleteConfirm, EditDialog } from "@/components/dashboard/row-actions";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { TransactionsTable } from "@/components/dashboard/transactions-table";
 import { FilterPills, num, useDataTable } from "@/components/dashboard/use-table";
@@ -23,13 +24,15 @@ const customerNames = customers.map((c) => c.name);
 const productNames = products.map((p) => p.name);
 
 export function TransactionsView({
-  title = "All Transactions",
+  title = "All Payments",
   showAdd = false,
 }: {
   title?: string;
   showAdd?: boolean;
 }) {
   const [rows, setRows] = useState<Transaction[]>(transactionsSeed);
+  const [editRow, setEditRow] = useState<Transaction | null>(null);
+  const [deleteRow, setDeleteRow] = useState<Transaction | null>(null);
   const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.customer, r.product],
     filterField: (r) => r.status,
@@ -63,28 +66,28 @@ export function TransactionsView({
             <Input
               value={t.query}
               onChange={(e) => t.setQuery(e.target.value)}
-              placeholder="Search transactions..."
+              placeholder="Search payments..."
               className="h-8 w-56 rounded-lg bg-muted/40 pl-8 shadow-none"
             />
           </div>
           {showAdd && (
             <AddDialog
-              title="Add Transaction"
-              submitLabel="Add Transaction"
+              title="Add Payment"
+              submitLabel="Add Payment"
               fields={[
                 {
                   name: "customer",
-                  label: "Customer",
+                  label: "Patient",
                   options: customerNames,
                   searchable: true,
-                  placeholder: "Search customers...",
+                  placeholder: "Search patients...",
                 },
                 {
                   name: "product",
-                  label: "Product",
+                  label: "Service",
                   options: productNames,
                   searchable: true,
-                  placeholder: "Search products...",
+                  placeholder: "Search services...",
                 },
                 { name: "qty", label: "Quantity", type: "number", placeholder: "1" },
                 { name: "unitPrice", label: "Unit price", type: "number", placeholder: "0" },
@@ -114,7 +117,7 @@ export function TransactionsView({
               trigger={
                 <Button variant="outline">
                   <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-                  Add Transaction
+                  Add Payment
                 </Button>
               }
             />
@@ -123,7 +126,12 @@ export function TransactionsView({
         </div>
       </div>
       <div className="overflow-hidden rounded-xl bg-card py-2">
-        <TransactionsTable transactions={t.rows} sort={t} />
+        <TransactionsTable
+          transactions={t.rows}
+          sort={t}
+          onEdit={setEditRow}
+          onDelete={setDeleteRow}
+        />
       </div>
       <TablePagination
         page={t.page}
@@ -131,6 +139,52 @@ export function TransactionsView({
         total={t.total}
         onPageChange={t.setPage}
         onPageSizeChange={t.setPageSize}
+      />
+      {editRow && (
+        <EditDialog
+          open={!!editRow}
+          onOpenChange={(o) => !o && setEditRow(null)}
+          title={`Edit ${editRow.id}`}
+          fields={[
+            { name: "customer", label: "Patient", options: customerNames },
+            { name: "product", label: "Service", options: productNames },
+            { name: "qty", label: "Quantity", type: "number" },
+            { name: "unitPrice", label: "Unit price", type: "number" },
+            { name: "status", label: "Status", options: ["Success", "Pending", "Refunded"] },
+          ]}
+          initial={{
+            customer: editRow.customer,
+            product: editRow.product,
+            qty: String(editRow.qty),
+            unitPrice: editRow.unitPrice.replace(/[^0-9.]/g, ""),
+            status: editRow.status,
+          }}
+          onSave={(v) => {
+            const qty = Number(v.qty) || 0;
+            const unit = Number(v.unitPrice) || 0;
+            setRows((r) =>
+              r.map((tx) =>
+                tx.id === editRow.id
+                  ? {
+                      ...tx,
+                      customer: v.customer,
+                      product: v.product,
+                      qty,
+                      unitPrice: money(v.unitPrice),
+                      totalRevenue: money(String(qty * unit)),
+                      status: v.status as Transaction["status"],
+                    }
+                  : tx,
+              ),
+            );
+          }}
+        />
+      )}
+      <DeleteConfirm
+        open={!!deleteRow}
+        onOpenChange={(o) => !o && setDeleteRow(null)}
+        title={deleteRow?.id ?? "payment"}
+        onConfirm={() => deleteRow && setRows((r) => r.filter((tx) => tx.id !== deleteRow.id))}
       />
     </Card>
   );

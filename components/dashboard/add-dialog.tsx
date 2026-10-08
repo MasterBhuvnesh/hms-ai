@@ -204,8 +204,8 @@ export function AddDialog({
   );
 }
 
-// format a raw numeric string as "$1,234"
+// format a raw numeric string as "₹1,234"
 export function money(raw: string) {
   const n = Math.round(Number(raw.replace(/[^0-9.]/g, "")) || 0);
-  return `$${n.toLocaleString("en-US")}`;
+  return `₹${n.toLocaleString("en-US")}`;
 }

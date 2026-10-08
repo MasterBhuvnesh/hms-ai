@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/dashboard/cards";
+import { RowActions } from "@/components/dashboard/row-actions";
 import { Th } from "@/components/dashboard/use-table";
 
 export type Transaction = {
@@ -27,20 +28,24 @@ export type Transaction = {
 
 const COLUMNS: { label: string; k: string }[] = [
   { label: "ID", k: "id" },
-  { label: "Customer", k: "customer" },
-  { label: "Product", k: "product" },
+  { label: "Patient", k: "customer" },
+  { label: "Service", k: "product" },
   { label: "Status", k: "status" },
   { label: "Qty", k: "qty" },
   { label: "Unit Price", k: "unitPrice" },
-  { label: "Total Revenue", k: "totalRevenue" },
+  { label: "Amount", k: "totalRevenue" },
 ];
 
-export function TransactionsTable({
+export function TransactionsTable<T extends Transaction>({
   transactions,
   sort,
+  onEdit,
+  onDelete,
 }: {
-  transactions: Transaction[];
+  transactions: T[];
   sort?: { sortKey: string | null; toggleSort: (key: string) => void };
+  onEdit?: (row: T) => void;
+  onDelete?: (row: T) => void;
 }) {
   return (
     <Table>
@@ -89,9 +94,17 @@ export function TransactionsTable({
               <TableCell className="font-mono">{tx.unitPrice}</TableCell>
               <TableCell className="font-mono">{tx.totalRevenue}</TableCell>
               <TableCell className="pr-4 text-right">
-                <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${tx.id}`}>
-                  <HugeiconsIcon icon={MoreHorizontalIcon} size={16} />
-                </Button>
+                {onEdit && onDelete ? (
+                  <RowActions
+                    label={tx.id}
+                    onEdit={() => onEdit(tx)}
+                    onDelete={() => onDelete(tx)}
+                  />
+                ) : (
+                  <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${tx.id}`}>
+                    <HugeiconsIcon icon={MoreHorizontalIcon} size={16} />
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           );

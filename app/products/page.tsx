@@ -8,35 +8,41 @@ import { KpiCard } from "@/components/dashboard/cards";
 import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
 import { ProductsTable } from "./products-table";
-import { products as productsSeed, type Product } from "@/data/mock";
-import data from "@/data/dashboard.json";
+import { StewardshipReview } from "./stewardship-review";
+import { medicines as medicinesSeed, type Medicine } from "@/data/hospital";
+
+const kpis = [
+  { label: "Total Medicines", value: "248", suffix: "SKUs", delta: "+12", deltaLabel: "this month", spark: [5, 6, 4, 7, 6, 8, 7, 9, 8, 12] },
+  { label: "Units Dispensed", value: "12,480", suffix: "", delta: "+8,2%", deltaLabel: "this month", spark: [4, 6, 5, 8, 6, 9, 7, 10, 8, 12] },
+  { label: "Low Stock", value: "16", suffix: "items", delta: "-4", deltaLabel: "vs last month", spark: [9, 8, 10, 7, 8, 6, 7, 5, 6, 12] },
+];
 
 export default function Products() {
-  const [rows, setRows] = useState<Product[]>(productsSeed);
+  const [rows, setRows] = useState<Medicine[]>(medicinesSeed);
 
   return (
-    <Shell breadcrumb="Products" active="Products">
+    <Shell breadcrumb="Pharmacy" active="Pharmacy">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-medium tracking-tight">Products</h1>
+        <h1 className="text-2xl font-medium tracking-tight">Pharmacy</h1>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" size="lg" className="bg-card">
             <HugeiconsIcon icon={FileExportIcon} size={14} data-icon="inline-start" />
             Export CSV
           </Button>
           <AddDialog
-            title="Add Product"
-            submitLabel="Add Product"
+            title="Add Medicine"
+            submitLabel="Add Medicine"
             fields={[
-              { name: "name", label: "Product name", placeholder: "Ergo Office Chair" },
-              { name: "sku", label: "SKU", placeholder: "EC-1042" },
+              { name: "name", label: "Medicine name", placeholder: "Paracetamol 500mg" },
+              { name: "sku", label: "SKU", placeholder: "MED-3100" },
               {
                 name: "category",
                 label: "Category",
-                options: ["Furniture", "Accessories", "Lighting", "Office Kits"],
+                options: ["Tablets", "Injections", "Syrups", "Surgical", "IV Fluids"],
               },
-              { name: "price", label: "Price", type: "number", placeholder: "345" },
+              { name: "price", label: "Price", type: "number", placeholder: "120" },
               { name: "stock", label: "Stock", type: "number", placeholder: "100" },
-              { name: "sold", label: "Units sold", type: "number", placeholder: "0" },
+              { name: "sold", label: "Units dispensed", type: "number", placeholder: "0" },
             ]}
             onSubmit={(v) => {
               const stock = Number(v.stock) || 0;
@@ -46,7 +52,7 @@ export default function Products() {
                 {
                   name: v.name,
                   sku: v.sku,
-                  category: v.category as Product["category"],
+                  category: v.category as Medicine["category"],
                   price: money(v.price),
                   stock,
                   status,
@@ -58,7 +64,7 @@ export default function Products() {
             trigger={
               <Button size="lg">
                 <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-                Add Product
+                Add Medicine
               </Button>
             }
           />
@@ -66,12 +72,14 @@ export default function Products() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {data.products.kpis.map((kpi) => (
+        {kpis.map((kpi) => (
           <KpiCard key={kpi.label} kpi={kpi} />
         ))}
       </div>
 
-      <ProductsTable rows={rows} />
+      <ProductsTable rows={rows} onChange={setRows} />
+
+      <StewardshipReview />
     </Shell>
   );
 }

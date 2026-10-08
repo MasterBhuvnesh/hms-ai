@@ -2,15 +2,15 @@
   "user": {
     "name": "Bhuvnesh Verma",
     "firstName": "Bhuvnesh",
-    "role": "Devops Engg.",
-    "team": "Spark Pixel Team",
-    "teamType": "Agency"
+    "role": "Admin",
+    "team": "CityCare Hospital",
+    "teamType": "Hospital"
   },
   "date": "6 Nov 2025",
   "kpis": [
     {
       "label": "Total Revenue",
-      "value": "$20,320",
+      "value": "₹20,320",
       "suffix": "",
       "delta": "+0,94", "deltaLabel": "last year",
       "spark": [4, 7, 3, 8, 5, 9, 4, 10, 6, 12]
@@ -38,7 +38,7 @@
     }
   ],
   "salesTrend": {
-    "totalRevenue": "$20,320",
+    "totalRevenue": "₹20,320",
     "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     "maxK": 60,
     "weeks": [
@@ -95,7 +95,7 @@
   },
   "revenueBreakdown": {
     "title": "Revenue by Category",
-    "total": "$20,320",
+    "total": "₹20,320",
     "range": "Jan 1 - Aug 30",
     "footerStart": "1 Jan",
     "footerEnd": "30 Jan 2025",
@@ -158,14 +158,14 @@
       }
     ],
     "items": [
-      { "name": "Ergo Office Chair", "sku": "EC-1042", "category": "Furniture", "price": "$345", "stock": 124, "status": "In Stock", "sold": "1,284" },
-      { "name": "Standing Desk Pro", "sku": "SD-2210", "category": "Furniture", "price": "$560", "stock": 8, "status": "Low Stock", "sold": "932" },
-      { "name": "Vertical Mouse", "sku": "VM-0031", "category": "Accessories", "price": "$49", "stock": 0, "status": "Out of Stock", "sold": "2,410" },
-      { "name": "Mechanical Keyboard", "sku": "MK-8801", "category": "Accessories", "price": "$129", "stock": 86, "status": "In Stock", "sold": "1,875" },
-      { "name": "Laptop Stand", "sku": "LS-1200", "category": "Accessories", "price": "$39", "stock": 210, "status": "In Stock", "sold": "3,022" },
-      { "name": "Monitor Arm Duo", "sku": "MA-7702", "category": "Accessories", "price": "$89", "stock": 12, "status": "Low Stock", "sold": "640" },
-      { "name": "Desk Lamp Halo", "sku": "DL-0450", "category": "Lighting", "price": "$59", "stock": 300, "status": "In Stock", "sold": "512" },
-      { "name": "Cable Tray Kit", "sku": "CT-0099", "category": "Accessories", "price": "$19", "stock": 0, "status": "Out of Stock", "sold": "1,108" }
+      { "name": "Ergo Office Chair", "sku": "EC-1042", "category": "Furniture", "price": "₹345", "stock": 124, "status": "In Stock", "sold": "1,284" },
+      { "name": "Standing Desk Pro", "sku": "SD-2210", "category": "Furniture", "price": "₹560", "stock": 8, "status": "Low Stock", "sold": "932" },
+      { "name": "Vertical Mouse", "sku": "VM-0031", "category": "Accessories", "price": "₹49", "stock": 0, "status": "Out of Stock", "sold": "2,410" },
+      { "name": "Mechanical Keyboard", "sku": "MK-8801", "category": "Accessories", "price": "₹129", "stock": 86, "status": "In Stock", "sold": "1,875" },
+      { "name": "Laptop Stand", "sku": "LS-1200", "category": "Accessories", "price": "₹39", "stock": 210, "status": "In Stock", "sold": "3,022" },
+      { "name": "Monitor Arm Duo", "sku": "MA-7702", "category": "Accessories", "price": "₹89", "stock": 12, "status": "Low Stock", "sold": "640" },
+      { "name": "Desk Lamp Halo", "sku": "DL-0450", "category": "Lighting", "price": "₹59", "stock": 300, "status": "In Stock", "sold": "512" },
+      { "name": "Cable Tray Kit", "sku": "CT-0099", "category": "Accessories", "price": "₹19", "stock": 0, "status": "Out of Stock", "sold": "1,108" }
     ]
   },
   "campaigns": {
@@ -193,20 +193,20 @@
       },
       {
         "label": "Total Spend",
-        "value": "$12,400",
+        "value": "₹12,400",
         "suffix": "",
         "delta": "-4,1%", "deltaLabel": "vs last month",
         "spark": [10, 9, 8, 9, 7, 8, 6, 5, 6, 12]
       }
     ],
     "items": [
-      { "name": "Summer Sale Blast", "channel": "Email", "status": "Active", "budget": "$3,000", "spent": "$2,140", "clicks": "12,480", "ctr": "4,2%" },
-      { "name": "New Arrivals Teaser", "channel": "Instagram", "status": "Active", "budget": "$2,500", "spent": "$1,860", "clicks": "9,320", "ctr": "3,9%" },
-      { "name": "Ergo Chair Launch", "channel": "Google Ads", "status": "Active", "budget": "$4,000", "spent": "$3,610", "clicks": "15,205", "ctr": "4,8%" },
-      { "name": "Cart Recovery Flow", "channel": "Email", "status": "Paused", "budget": "$800", "spent": "$430", "clicks": "3,115", "ctr": "2,7%" },
-      { "name": "Festive Gift Guide", "channel": "Facebook", "status": "Paused", "budget": "$1,500", "spent": "$920", "clicks": "4,470", "ctr": "2,3%" },
-      { "name": "Spring Clearance", "channel": "Email", "status": "Ended", "budget": "$2,000", "spent": "$2,000", "clicks": "8,660", "ctr": "3,1%" },
-      { "name": "Influencer Collab", "channel": "TikTok", "status": "Ended", "budget": "$3,200", "spent": "$3,200", "clicks": "22,340", "ctr": "5,6%" }
+      { "name": "Summer Sale Blast", "channel": "Email", "status": "Active", "budget": "₹3,000", "spent": "₹2,140", "clicks": "12,480", "ctr": "4,2%" },
+      { "name": "New Arrivals Teaser", "channel": "Instagram", "status": "Active", "budget": "₹2,500", "spent": "₹1,860", "clicks": "9,320", "ctr": "3,9%" },
+      { "name": "Ergo Chair Launch", "channel": "Google Ads", "status": "Active", "budget": "₹4,000", "spent": "₹3,610", "clicks": "15,205", "ctr": "4,8%" },
+      { "name": "Cart Recovery Flow", "channel": "Email", "status": "Paused", "budget": "₹800", "spent": "₹430", "clicks": "3,115", "ctr": "2,7%" },
+      { "name": "Festive Gift Guide", "channel": "Facebook", "status": "Paused", "budget": "₹1,500", "spent": "₹920", "clicks": "4,470", "ctr": "2,3%" },
+      { "name": "Spring Clearance", "channel": "Email", "status": "Ended", "budget": "₹2,000", "spent": "₹2,000", "clicks": "8,660", "ctr": "3,1%" },
+      { "name": "Influencer Collab", "channel": "TikTok", "status": "Ended", "budget": "₹3,200", "spent": "₹3,200", "clicks": "22,340", "ctr": "5,6%" }
     ]
   },
   "team": {
@@ -242,27 +242,27 @@
     ],
     "goal": {
       "label": "Q4 Target",
-      "reached": "$218,400",
-      "target": "$250,000",
+      "reached": "₹218,400",
+      "target": "₹250,000",
       "percent": 87,
-      "remaining": "$31,600",
+      "remaining": "₹31,600",
       "daysLeft": 24,
       "months": [
-        { "name": "Oct", "value": "$84,200", "share": 39 },
-        { "name": "Nov", "value": "$96,400", "share": 44 },
-        { "name": "Dec", "value": "$37,800", "share": 17 }
+        { "name": "Oct", "value": "₹84,200", "share": 39 },
+        { "name": "Nov", "value": "₹96,400", "share": 44 },
+        { "name": "Dec", "value": "₹37,800", "share": 17 }
       ],
       "delta": "+12,4%", "deltaLabel": "vs last quarter"
     },
     "members": [
-      { "name": "Bhuvnesh Verma", "role": "Devops Engg.", "deals": 64, "revenue": "$48,200", "attainment": 96 },
-      { "name": "Aditi Rao", "role": "Account Exec", "deals": 58, "revenue": "$41,600", "attainment": 91 },
-      { "name": "Jonas Weber", "role": "Sales Rep", "deals": 53, "revenue": "$38,900", "attainment": 88 },
-      { "name": "Mei Lin", "role": "Account Exec", "deals": 47, "revenue": "$33,400", "attainment": 84 },
-      { "name": "Tom Okafor", "role": "Sales Rep", "deals": 41, "revenue": "$29,750", "attainment": 79 },
-      { "name": "Sara Kim", "role": "SDR", "deals": 36, "revenue": "$24,300", "attainment": 72 },
-      { "name": "Leo Martins", "role": "SDR", "deals": 30, "revenue": "$21,150", "attainment": 68 },
-      { "name": "Nina Petrova", "role": "Sales Rep", "deals": 26, "revenue": "$18,600", "attainment": 61 }
+      { "name": "Bhuvnesh Verma", "role": "Devops Engg.", "deals": 64, "revenue": "₹48,200", "attainment": 96 },
+      { "name": "Aditi Rao", "role": "Account Exec", "deals": 58, "revenue": "₹41,600", "attainment": 91 },
+      { "name": "Jonas Weber", "role": "Sales Rep", "deals": 53, "revenue": "₹38,900", "attainment": 88 },
+      { "name": "Mei Lin", "role": "Account Exec", "deals": 47, "revenue": "₹33,400", "attainment": 84 },
+      { "name": "Tom Okafor", "role": "Sales Rep", "deals": 41, "revenue": "₹29,750", "attainment": 79 },
+      { "name": "Sara Kim", "role": "SDR", "deals": 36, "revenue": "₹24,300", "attainment": 72 },
+      { "name": "Leo Martins", "role": "SDR", "deals": 30, "revenue": "₹21,150", "attainment": 68 },
+      { "name": "Nina Petrova", "role": "Sales Rep", "deals": 26, "revenue": "₹18,600", "attainment": 61 }
     ]
   },
   "messages": {
@@ -286,21 +286,21 @@
     "kpis": [
       {
         "label": "Total Revenue",
-        "value": "$84,120",
+        "value": "₹84,120",
         "suffix": "",
         "delta": "+4,6%", "deltaLabel": "this quarter",
         "spark": [5, 6, 4, 7, 6, 8, 7, 9, 8, 12]
       },
       {
         "label": "Total Profit",
-        "value": "$23,860",
+        "value": "₹23,860",
         "suffix": "",
         "delta": "+2,8%", "deltaLabel": "this quarter",
         "spark": [4, 5, 6, 5, 7, 6, 8, 9, 10, 12]
       },
       {
         "label": "Avg Order Value",
-        "value": "$64",
+        "value": "₹64",
         "suffix": "",
         "delta": "+1,4%", "deltaLabel": "this quarter",
         "spark": [6, 5, 7, 6, 8, 7, 9, 8, 10, 12]
@@ -328,10 +328,10 @@
       { "month": "Dec", "revenue": 88, "lastYear": 74 }
     ],
     "categories": [
-      { "name": "Furniture", "value": "$38,400", "share": 46 },
-      { "name": "Accessories", "value": "$27,900", "share": 33 },
-      { "name": "Lighting", "value": "$10,600", "share": 13 },
-      { "name": "Office Kits", "value": "$7,220", "share": 8 }
+      { "name": "Furniture", "value": "₹38,400", "share": 46 },
+      { "name": "Accessories", "value": "₹27,900", "share": 33 },
+      { "name": "Lighting", "value": "₹10,600", "share": 13 },
+      { "name": "Office Kits", "value": "₹7,220", "share": 8 }
     ]
   },
   "transactionKpis": [
@@ -358,7 +358,7 @@
     },
     {
       "label": "Refunded",
-      "value": "$1,240",
+      "value": "₹1,240",
       "suffix": "",
       "delta": "-0,4%", "deltaLabel": "this month",
       "spark": [8, 7, 9, 6, 8, 5, 7, 4, 6, 12]
@@ -371,8 +371,8 @@
       "product": "Ergo Office Chair",
       "status": "Success",
       "qty": 12,
-      "unitPrice": "$3,450",
-      "totalRevenue": "$41,400"
+      "unitPrice": "₹3,450",
+      "totalRevenue": "₹41,400"
     },
     {
       "id": "#04911",
@@ -380,8 +380,8 @@
       "product": "Sunset Desk 02",
       "status": "Success",
       "qty": 20,
-      "unitPrice": "$2,980",
-      "totalRevenue": "$89,200"
+      "unitPrice": "₹2,980",
+      "totalRevenue": "₹89,200"
     },
     {
       "id": "#04912",
@@ -389,8 +389,8 @@
       "product": "Eco Bookshelf",
       "status": "Pending",
       "qty": 22,
-      "unitPrice": "$1,750",
-      "totalRevenue": "$75,900"
+      "unitPrice": "₹1,750",
+      "totalRevenue": "₹75,900"
     },
     {
       "id": "#04913",
@@ -398,8 +398,8 @@
       "product": "Green Leaf Desk",
       "status": "Refunded",
       "qty": 24,
-      "unitPrice": "$1,950",
-      "totalRevenue": "$19,500"
+      "unitPrice": "₹1,950",
+      "totalRevenue": "₹19,500"
     },
     {
       "id": "#04914",
@@ -407,8 +407,8 @@
       "product": "Cloud Sofa Mini",
       "status": "Success",
       "qty": 8,
-      "unitPrice": "$4,120",
-      "totalRevenue": "$32,960"
+      "unitPrice": "₹4,120",
+      "totalRevenue": "₹32,960"
     },
     {
       "id": "#04915",
@@ -416,8 +416,8 @@
       "product": "Maple Nightstand",
       "status": "Pending",
       "qty": 16,
-      "unitPrice": "$1,280",
-      "totalRevenue": "$20,480"
+      "unitPrice": "₹1,280",
+      "totalRevenue": "₹20,480"
     }
   ]
 }

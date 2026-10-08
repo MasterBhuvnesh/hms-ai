@@ -44,7 +44,7 @@ function group(n: number): string {
 }
 
 function money(n: number): string {
-  return "$" + group(n);
+  return "₹" + group(n);
 }
 
 // European-style percent, e.g. 4.2 -> "4,2%". toFixed always uses ".", spec-stable.
@@ -395,7 +395,7 @@ const THREAD_SCRIPTS: readonly { name: string; msgs: readonly [ChatMessage["from
       ["them", "Can I exchange the Task Stool Compact for the taller version?"],
       ["me", "Of course — I'll email a prepaid return label."],
       ["them", "Do I pay the price difference?"],
-      ["me", "Just the $40 difference, charged after we receive the return."],
+      ["me", "Just the ₹40 difference, charged after we receive the return."],
       ["them", "Sounds fair, sending it back today."],
     ],
   },
@@ -551,7 +551,7 @@ export const invoices: Invoice[] = [];
     invoices.push({
       id: `INV-${invYear}-${pad3(seq)}`,
       date: `1 ${MONTHS[m]} ${y}`,
-      amount: rng() < 0.5 ? "$49" : "$59",
+      amount: rng() < 0.5 ? "₹49" : "₹59",
       status: i >= 22 ? "Overdue" : "Paid", // exactly the last 2 are overdue
     });
     m++;

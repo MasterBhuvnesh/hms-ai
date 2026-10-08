@@ -8,7 +8,7 @@ import { TableHead } from "@/components/ui/table";
 export type SortDir = "asc" | "desc";
 
 // Strip everything but digits for a monotonic numeric key. Works for money
-// ("$12,340" -> 12340), plain numbers, and percents ("4,2%" -> 42): within a
+// ("₹12,340" -> 12340), plain numbers, and percents ("4,2%" -> 42): within a
 // single column the format is consistent, so order is preserved.
 export const num = (s: string | number) =>
   typeof s === "number" ? s : Number(String(s).replace(/[^0-9]/g, "")) || 0;

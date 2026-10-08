@@ -5,81 +5,83 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/dashboard/cards";
-import { AddDialog, money } from "@/components/dashboard/add-dialog";
+import { AddDialog } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
 import type { Kpi } from "@/components/dashboard/cards";
 import { OrdersTable } from "./orders-table";
-import { orders as ordersSeed, type Order } from "@/data/mock";
-import data from "@/data/dashboard.json";
+import { appointments as appointmentsSeed, type Appointment } from "@/data/hospital";
 
 const kpis: Kpi[] = [
   {
-    label: "Total Orders",
-    value: "10,320",
+    label: "Today's Appointments",
+    value: "86",
     suffix: "",
-    delta: "+5,6%",
-    deltaLabel: "vs last month",
+    delta: "+8",
+    deltaLabel: "vs yesterday",
     spark: [4, 6, 5, 7, 6, 8, 7, 9, 8, 12],
   },
   {
-    label: "Processing",
-    value: "148",
+    label: "In Progress",
+    value: "12",
     suffix: "",
-    delta: "+2,1%",
-    deltaLabel: "vs last month",
+    delta: "+2",
+    deltaLabel: "right now",
     spark: [3, 5, 4, 6, 5, 7, 8, 7, 9, 10],
   },
   {
-    label: "Shipped",
-    value: "96",
+    label: "Completed",
+    value: "54",
     suffix: "",
-    delta: "+3,7%",
-    deltaLabel: "vs last month",
+    delta: "+6",
+    deltaLabel: "today",
     spark: [5, 4, 6, 5, 7, 6, 8, 9, 8, 11],
   },
   {
-    label: "Returns",
-    value: "23",
+    label: "No Show / Cancelled",
+    value: "7",
     suffix: "",
-    delta: "+0,4%",
-    deltaLabel: "vs last month",
+    delta: "-2",
+    deltaLabel: "vs yesterday",
     spark: [4, 5, 4, 6, 5, 7, 6, 8, 9, 10],
   },
 ];
 
 export default function OrderManagement() {
-  const [rows, setRows] = useState<Order[]>(ordersSeed);
+  const [rows, setRows] = useState<Appointment[]>(appointmentsSeed);
 
   return (
-    <Shell breadcrumb="Order Management" active="Order Management">
+    <Shell breadcrumb="Appointments" active="Appointments">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-medium tracking-tight">Order Management</h1>
+        <h1 className="text-2xl font-medium tracking-tight">Appointments</h1>
         <AddDialog
-          title="Create Order"
-          submitLabel="Create Order"
+          title="Book Appointment"
+          submitLabel="Book Appointment"
           fields={[
-            { name: "customer", label: "Customer", placeholder: "Jane Cooper" },
-            { name: "items", label: "Items", type: "number", placeholder: "1" },
-            { name: "total", label: "Total", type: "number", placeholder: "0" },
+            { name: "patient", label: "Patient", placeholder: "Jane Cooper" },
+            { name: "doctor", label: "Doctor", placeholder: "Dr. Aditi Rao" },
+            { name: "department", label: "Department", options: ["Cardiology", "Orthopedics", "Pediatrics", "Neurology", "General", "Emergency", "Radiology", "Pharmacy"] },
+            { name: "type", label: "Type", options: ["Consult", "Follow-up", "Emergency", "Surgery", "Lab Test"] },
             {
               name: "status",
               label: "Status",
-              options: ["Processing", "Shipped", "Delivered", "Cancelled"],
+              options: ["Scheduled", "In Progress", "Completed", "Cancelled", "No Show"],
             },
           ]}
           onSubmit={(v) => {
             const maxNum = rows.reduce(
               (m, o) => Math.max(m, Number(o.id.replace(/\D/g, "")) || 0),
-              7300,
+              5000,
             );
             setRows((r) => [
               {
-                id: `ORD-${maxNum + 1}`,
-                customer: v.customer,
-                items: Number(v.items) || 1,
-                total: money(v.total),
-                status: v.status as Order["status"],
-                date: data.date,
+                id: `APT-${maxNum + 1}`,
+                patient: v.patient,
+                doctor: v.doctor,
+                department: v.department,
+                date: "6 Nov 2025",
+                time: "10:00",
+                type: v.type as Appointment["type"],
+                status: v.status as Appointment["status"],
               },
               ...r,
             ]);
@@ -87,7 +89,7 @@ export default function OrderManagement() {
           trigger={
             <Button size="lg">
               <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />
-              Create Order
+              Book Appointment
             </Button>
           }
         />
@@ -99,7 +101,7 @@ export default function OrderManagement() {
         ))}
       </div>
 
-      <OrdersTable rows={rows} />
+      <OrdersTable rows={rows} onChange={setRows} />
     </Shell>
   );
 }

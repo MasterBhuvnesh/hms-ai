@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MoreHorizontalIcon, Search01Icon } from "@hugeicons/core-free-icons";
-import { Button } from "@/components/ui/button";
+import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -15,11 +15,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
+import { money } from "@/components/dashboard/add-dialog";
+import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, num, Th, useDataTable } from "@/components/dashboard/use-table";
-import type { Product } from "@/data/mock";
+import type { Medicine } from "@/data/hospital";
 
-export function ProductsTable({ rows }: { rows: Product[] }) {
+const categories = ["Tablets", "Injections", "Syrups", "Surgical", "IV Fluids"] as const;
+
+export function ProductsTable({ rows, onChange }: { rows: Medicine[]; onChange: (rows: Medicine[]) => void }) {
   const t = useDataTable(rows, {
     searchFields: (r) => [r.name, r.sku, r.category],
     filterField: (r) => r.status,
@@ -33,11 +37,34 @@ export function ProductsTable({ rows }: { rows: Product[] }) {
       sold: (r) => num(r.sold),
     },
   });
+  const [editSku, setEditSku] = useState<string | null>(null);
+  const [deleteSku, setDeleteSku] = useState<string | null>(null);
+  const editRow = rows.find((r) => r.sku === editSku) ?? null;
+
+  function saveEdit(values: Record<string, string>) {
+    if (!editSku) return;
+    const stock = Number(values.stock) || 0;
+    const status = stock === 0 ? "Out of Stock" : stock <= 15 ? "Low Stock" : "In Stock";
+    onChange(
+      rows.map((r) =>
+        r.sku === editSku
+          ? {
+              ...r,
+              name: values.name,
+              price: money(values.price),
+              stock,
+              status,
+              category: values.category as Medicine["category"],
+            }
+          : r,
+      ),
+    );
+  }
 
   return (
     <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
-        <PanelTitle title="All Products" />
+        <PanelTitle title="All Medicines" />
         <div className="flex items-center gap-2">
           <FilterPills
             options={["All", "In Stock", "Low Stock", "Out of Stock"]}
@@ -53,7 +80,7 @@ export function ProductsTable({ rows }: { rows: Product[] }) {
             <Input
               value={t.query}
               onChange={(e) => t.setQuery(e.target.value)}
-              placeholder="Search products..."
+              placeholder="Search medicines..."
               className="h-8 w-56 rounded-lg bg-muted/40 pl-8 shadow-none"
             />
           </div>
@@ -67,7 +94,7 @@ export function ProductsTable({ rows }: { rows: Product[] }) {
               <TableHead className="w-12 pl-4">
                 <Checkbox aria-label="Select all" />
               </TableHead>
-              <Th label="Product" k="name" sort={t} />
+              <Th label="Medicine" k="name" sort={t} />
               <Th label="SKU" k="sku" sort={t} />
               <Th label="Category" k="category" sort={t} />
               <Th label="Price" k="price" sort={t} />
@@ -104,13 +131,11 @@ export function ProductsTable({ rows }: { rows: Product[] }) {
                   </TableCell>
                   <TableCell className="font-mono">{product.sold}</TableCell>
                   <TableCell className="pr-4 text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={`Actions for ${product.name}`}
-                    >
-                      <HugeiconsIcon icon={MoreHorizontalIcon} size={16} />
-                    </Button>
+                    <RowActions
+                      label={product.name}
+                      onEdit={() => setEditSku(product.sku)}
+                      onDelete={() => setDeleteSku(product.sku)}
+                    />
                   </TableCell>
                 </TableRow>
               );
@@ -124,6 +149,32 @@ export function ProductsTable({ rows }: { rows: Product[] }) {
         total={t.total}
         onPageChange={t.setPage}
         onPageSizeChange={t.setPageSize}
+      />
+      {editRow && (
+        <EditDialog
+          open={!!editRow}
+          onOpenChange={(o) => !o && setEditSku(null)}
+          title={`Edit ${editRow.name}`}
+          fields={[
+            { name: "name", label: "Medicine name" },
+            { name: "price", label: "Price", type: "number" },
+            { name: "stock", label: "Stock", type: "number" },
+            { name: "category", label: "Category", options: categories },
+          ]}
+          initial={{
+            name: editRow.name,
+            price: editRow.price.replace(/[^0-9.]/g, ""),
+            stock: String(editRow.stock),
+            category: editRow.category,
+          }}
+          onSave={saveEdit}
+        />
+      )}
+      <DeleteConfirm
+        open={!!deleteSku}
+        onOpenChange={(o) => !o && setDeleteSku(null)}
+        title={rows.find((r) => r.sku === deleteSku)?.name ?? "medicine"}
+        onConfirm={() => deleteSku && onChange(rows.filter((r) => r.sku !== deleteSku))}
       />
     </Card>
   );

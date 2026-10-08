@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MoreHorizontalIcon, Search01Icon } from "@hugeicons/core-free-icons";
-import { Button } from "@/components/ui/button";
+import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -15,11 +15,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
+import { money } from "@/components/dashboard/add-dialog";
+import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, num, Th, useDataTable } from "@/components/dashboard/use-table";
-import type { Campaign } from "@/data/mock";
+import type { HealthCampaign } from "@/data/hospital";
 
-export function CampaignsTable({ rows }: { rows: Campaign[] }) {
+export function CampaignsTable({
+  rows,
+  onChange,
+}: {
+  rows: HealthCampaign[];
+  onChange: (rows: HealthCampaign[]) => void;
+}) {
+  const [editKey, setEditKey] = useState<string | null>(null);
+  const [deleteKey, setDeleteKey] = useState<string | null>(null);
+  const editing = rows.find((r) => r.name === editKey) ?? null;
+  const deleting = rows.find((r) => r.name === deleteKey) ?? null;
   const t = useDataTable(rows, {
     searchFields: (r) => [r.name, r.channel],
     filterField: (r) => r.status,
@@ -29,15 +41,15 @@ export function CampaignsTable({ rows }: { rows: Campaign[] }) {
       status: (r) => r.status,
       budget: (r) => num(r.budget),
       spent: (r) => num(r.spent),
-      clicks: (r) => num(r.clicks),
-      ctr: (r) => num(r.ctr),
+      reached: (r) => num(r.reached),
+      coverage: (r) => num(r.coverage),
     },
   });
 
   return (
     <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
-        <PanelTitle title="All Campaigns" />
+        <PanelTitle title="All Health Campaigns" />
         <div className="flex items-center gap-2">
           <FilterPills
             options={["All", "Active", "Paused", "Ended"]}
@@ -53,7 +65,7 @@ export function CampaignsTable({ rows }: { rows: Campaign[] }) {
             <Input
               value={t.query}
               onChange={(e) => t.setQuery(e.target.value)}
-              placeholder="Search campaigns..."
+              placeholder="Search drives..."
               className="h-8 w-56 rounded-lg bg-muted/40 pl-8 shadow-none"
             />
           </div>
@@ -72,8 +84,8 @@ export function CampaignsTable({ rows }: { rows: Campaign[] }) {
               <Th label="Status" k="status" sort={t} />
               <Th label="Budget" k="budget" sort={t} />
               <Th label="Spent" k="spent" sort={t} />
-              <Th label="Clicks" k="clicks" sort={t} />
-              <Th label="CTR" k="ctr" sort={t} />
+              <Th label="Reached" k="reached" sort={t} />
+              <Th label="Coverage" k="coverage" sort={t} />
               <TableHead className="pr-4 text-right font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
                 Actions
               </TableHead>
@@ -102,16 +114,14 @@ export function CampaignsTable({ rows }: { rows: Campaign[] }) {
                 </TableCell>
                 <TableCell className="font-mono">{campaign.budget}</TableCell>
                 <TableCell className="font-mono">{campaign.spent}</TableCell>
-                <TableCell className="font-mono">{campaign.clicks}</TableCell>
-                <TableCell className="font-mono">{campaign.ctr}</TableCell>
+                <TableCell className="font-mono">{campaign.reached}</TableCell>
+                <TableCell className="font-mono">{campaign.coverage}</TableCell>
                 <TableCell className="pr-4 text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Actions for ${campaign.name}`}
-                  >
-                    <HugeiconsIcon icon={MoreHorizontalIcon} size={16} />
-                  </Button>
+                  <RowActions
+                    label={campaign.name}
+                    onEdit={() => setEditKey(campaign.name)}
+                    onDelete={() => setDeleteKey(campaign.name)}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -124,6 +134,60 @@ export function CampaignsTable({ rows }: { rows: Campaign[] }) {
         total={t.total}
         onPageChange={t.setPage}
         onPageSizeChange={t.setPageSize}
+      />
+      {editing && (
+        <EditDialog
+          open={editKey !== null}
+          onOpenChange={(o) => {
+            if (!o) setEditKey(null);
+          }}
+          title={`Edit ${editing.name}`}
+          fields={[
+            {
+              name: "channel",
+              label: "Channel",
+              options: ["Camp", "SMS", "Email", "Poster", "ASHA Visit"],
+            },
+            { name: "status", label: "Status", options: ["Active", "Paused", "Ended"] },
+            { name: "budget", label: "Budget", type: "number" },
+            { name: "spent", label: "Spent", type: "number" },
+            { name: "reached", label: "Reached" },
+            { name: "coverage", label: "Coverage" },
+          ]}
+          initial={{
+            channel: editing.channel,
+            status: editing.status,
+            budget: editing.budget.replace(/[^0-9.]/g, ""),
+            spent: editing.spent.replace(/[^0-9.]/g, ""),
+            reached: editing.reached,
+            coverage: editing.coverage,
+          }}
+          onSave={(v) =>
+            onChange(
+              rows.map((r) =>
+                r.name === editing.name
+                  ? {
+                      ...r,
+                      channel: v.channel as HealthCampaign["channel"],
+                      status: v.status as HealthCampaign["status"],
+                      budget: money(v.budget),
+                      spent: money(v.spent),
+                      reached: v.reached,
+                      coverage: v.coverage,
+                    }
+                  : r,
+              ),
+            )
+          }
+        />
+      )}
+      <DeleteConfirm
+        open={deleteKey !== null}
+        onOpenChange={(o) => {
+          if (!o) setDeleteKey(null);
+        }}
+        title={deleting?.name ?? "campaign"}
+        onConfirm={() => onChange(rows.filter((r) => r.name !== deleteKey))}
       />
     </Card>
   );

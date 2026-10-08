@@ -23,7 +23,7 @@ const categoryShades = [
   "bg-foreground/25",
 ];
 
-const topProducts = [...products]
+const topMedicines = [...products]
   .sort((a, b) => Number(b.sold.replace(/,/g, "")) - Number(a.sold.replace(/,/g, "")))
   .slice(0, 5);
 
@@ -62,7 +62,7 @@ export default function Reports() {
 
         <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
           <div className="flex items-center justify-between px-3 py-2">
-            <PanelTitle title="Top Categories" />
+            <PanelTitle title="Revenue by Department" />
             <MoreButton />
           </div>
           <div className="flex-1 space-y-5 rounded-xl bg-card p-4">
@@ -99,14 +99,14 @@ export default function Reports() {
 
       <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
         <div className="flex items-center justify-between px-3 py-2">
-          <PanelTitle title="Top Products" />
+          <PanelTitle title="Top Departments" />
           <MoreButton />
         </div>
         <div className="overflow-hidden rounded-xl bg-card py-2">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                {["Rank", "Product", "Category", "Price", "Sold"].map((heading) => (
+                {["Rank", "Medicine", "Department", "Price", "Dispensed"].map((heading) => (
                   <TableHead
                     key={heading}
                     className="first:pl-4 font-mono text-[10px] tracking-wider text-muted-foreground uppercase"
@@ -117,7 +117,7 @@ export default function Reports() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {topProducts.map((product, i) => (
+              {topMedicines.map((product, i) => (
                 <TableRow key={product.sku}>
                   <TableCell className="pl-4 font-mono text-muted-foreground">
                     #{i + 1}

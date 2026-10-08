@@ -1,19 +1,22 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
+import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
 import { Shell } from "@/components/dashboard/shell";
 
 const preferences = [
   {
     label: "Email notifications",
-    description: "Get an email when a ticket or order needs attention.",
+    description: "Get an email when a helpdesk ticket needs attention.",
     checked: true,
   },
   {
     label: "Weekly summary",
-    description: "A digest of sales and team performance every Monday.",
+    description: "A digest of patient volumes and team performance every Monday.",
     checked: true,
   },
   {
@@ -35,6 +38,74 @@ const workspaceMeta = [
 
 const labelClass = "font-mono text-[11px] tracking-wide text-muted-foreground uppercase";
 const inputClass = "h-9 rounded-lg border-transparent bg-muted/40 shadow-none";
+
+type ComplianceStatus = "Valid" | "Renewal due" | "Expired";
+
+type ComplianceItem = {
+  name: string;
+  expires: string;
+  status: ComplianceStatus;
+};
+
+const COMPLIANCE_SEED: ComplianceItem[] = [
+  { name: "Fire NOC", expires: "Dec 2026", status: "Valid" },
+  { name: "BMW Authorization", expires: "Nov 2026", status: "Valid" },
+  { name: "Drug License", expires: "Oct 2026", status: "Renewal due" },
+  { name: "AERB X-ray", expires: "Jan 2027", status: "Valid" },
+  { name: "Clinical Establishment", expires: "Sep 2026", status: "Expired" },
+  { name: "PCPNDT", expires: "Mar 2027", status: "Valid" },
+];
+
+function badgeFor(status: ComplianceStatus): string {
+  if (status === "Valid") return "Active";
+  if (status === "Renewal due") return "Pending";
+  return "Overdue";
+}
+
+function CompliancePanel() {
+  const [items, setItems] = useState<ComplianceItem[]>(COMPLIANCE_SEED);
+  const expired = items.filter((i) => i.status === "Expired").length;
+  const due = items.filter((i) => i.status === "Renewal due").length;
+
+  return (
+    <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
+        <PanelTitle title="Compliance & Licenses" />
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[11px] text-red-600 dark:text-red-400">{expired} expired,</span>
+          <span className="font-mono text-[11px] text-amber-600 dark:text-amber-400">{due} due</span>
+          <MoreButton />
+        </div>
+      </div>
+      <div className="rounded-xl bg-card p-4">
+        <ul className="divide-y">
+          {items.map((item) => (
+            <li key={item.name} className="flex flex-wrap items-center justify-between gap-2 py-2">
+              <div>
+                <p className="text-sm font-medium">{item.name}</p>
+                <p className="font-mono text-xs text-muted-foreground">expires {item.expires}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <StatusBadge status={badgeFor(item.status)} />
+                <span className="w-20 font-mono text-[11px] text-muted-foreground">{item.status}</span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={item.status === "Valid"}
+                  onClick={() =>
+                    setItems((prev) => prev.map((p) => (p.name === item.name ? { ...p, status: "Valid" } : p)))
+                  }
+                >
+                  Mark renewed
+                </Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Card>
+  );
+}
 
 export default function SystemSettings() {
   return (
@@ -123,6 +194,8 @@ export default function SystemSettings() {
           </div>
         </Card>
       </div>
+
+      <CompliancePanel />
     </Shell>
   );
 }

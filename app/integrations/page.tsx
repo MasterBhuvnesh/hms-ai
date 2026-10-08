@@ -5,40 +5,40 @@ import { Shell } from "@/components/dashboard/shell";
 
 const integrations = [
   {
-    name: "Slack",
+    name: "LIS",
     status: "Connected",
-    description: "Send sales alerts and daily summaries straight to your team channels.",
-    category: "Communication",
+    description: "Sync lab orders, samples and test results with the central laboratory automatically.",
+    category: "Lab",
   },
   {
-    name: "Notion",
-    status: "Disconnected",
-    description: "Sync reports and meeting notes into your team workspace automatically.",
-    category: "Docs",
+    name: "PACS",
+    status: "Connected",
+    description: "View radiology images and diagnostic reports straight from imaging modalities.",
+    category: "Radiology",
   },
   {
-    name: "Stripe",
+    name: "SMS Gateway",
     status: "Connected",
-    description: "Import payments, payouts and refunds to keep revenue data in sync.",
+    description: "Send appointment reminders, OTP codes and report alerts to patients via SMS.",
+    category: "Comms",
+  },
+  {
+    name: "UPI Payments",
+    status: "Connected",
+    description: "Collect OPD, pharmacy and discharge payments via UPI with instant reconciliation.",
     category: "Payments",
   },
   {
-    name: "Zapier",
-    status: "Connected",
-    description: "Automate workflows by connecting the dashboard to 5,000+ other apps.",
-    category: "Automation",
+    name: "ABDM",
+    status: "Disconnected",
+    description: "Link patient records with ABHA IDs under the national digital health stack.",
+    category: "Records",
   },
   {
-    name: "HubSpot",
+    name: "Pharmacy ERP",
     status: "Disconnected",
-    description: "Sync contacts and deals so your pipeline matches your CRM records.",
-    category: "CRM",
-  },
-  {
-    name: "QuickBooks",
-    status: "Disconnected",
-    description: "Push invoices and transaction data into your accounting ledger.",
-    category: "Accounting",
+    description: "Sync medicine stock, purchase orders and billing with the pharmacy store.",
+    category: "Records",
   },
 ];
 
@@ -46,7 +46,7 @@ export default function Integrations() {
   return (
     <Shell breadcrumb="Integrations" active="Integrations">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-medium tracking-tight">Integrations</h1>
+        <h1 className="text-2xl font-medium tracking-tight">Clinical Integrations</h1>
         <Button size="lg">Browse All</Button>
       </div>
 
