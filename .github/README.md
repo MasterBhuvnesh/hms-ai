@@ -12,7 +12,7 @@ website/          # staff dashboard (Next.js 16 App Router)
   docs/           # DESIGN.md and style-docs/ UI pattern notes
   lib/            # permissions, AI tools, repositories, utils
   public/         # static assets
-patient-app/      # planned patient application (not created yet)
+patient-app/      # planned patient application (see patient-app/README.md)
 .github/          # readme and assets
 ROHIT.AGENT.md    # handoff doc (open PR #1)
 ```
