@@ -34,7 +34,7 @@ yarn-error.log*
 .env*
 
 # ai runtime logs (append-only, never commit)
-data/ai-events.jsonl
+/website/data/ai-events.jsonl
 
 # vercel
 .vercel
