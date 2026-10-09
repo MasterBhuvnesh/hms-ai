@@ -1,16 +1,43 @@
-# next-dashboard-template
+# hms-ai
 
-Reusable Next.js dashboard starter with sales, team, orders and analytics views. Use it as a base for internal tools or sample admin panels.
+Hospital Management System with AI-ready modules. Monorepo: `website/` holds the staff dashboard (Next.js), `patient-app/` will hold the patient side later.
 
-## Screenshots
+## Layout
 
-### Light mode
+```text
+website/          # staff dashboard (Next.js 16 App Router)
+  app/            # routes (dashboard, patients, billing, AI chat API, etc.)
+  components/     # dashboard shell, tables, dialogs, AI assistant
+  data/           # seed data (mock hospital dataset)
+  lib/            # permissions, AI tools, repositories, utils
+  public/         # static assets
+patient-app/      # planned patient application (not created yet)
+ROHIT.AGENT.md    # handoff doc (open PR #1)
+style-docs/       # UI pattern notes
+```
 
-![Dashboard light mode](public/screenshots/light.png)
+## Getting Started
 
-### Dark mode
+Requirements: Node.js 20+, npm.
 
-![Dashboard dark mode](public/screenshots/dark.png)
+```bash
+cd website
+npm install
+npx next dev --port 3000
+```
+
+Open http://localhost:3000.
+
+## Scripts (run inside `website/`)
+
+```bash
+npm run dev     # start dev server
+npm run build   # production build
+npm run start   # run production build
+npm run lint    # run eslint
+```
+
+Use `npx next dev --port 3000` directly. `npm run dev -- --port 3000` fails on Windows npm flag parsing.
 
 ## Tech Stack
 
@@ -20,65 +47,9 @@ Reusable Next.js dashboard starter with sales, team, orders and analytics views.
 - Tailwind CSS 4
 - shadcn UI on Radix UI primitives
 - Recharts 3 for charts
-- HugeIcons + Lucide for icons
-- date-fns for dates
-- ESLint 9 with eslint-config-next
-
-## Features
-
-- Dashboard home with KPIs, sales trend, leaderboard and messages
-- Products, transactions, reports and analytics
-- Customers, channels, order management
-- Team performance with search, filter, sort and pagination
-- Campaigns, roles and permissions, billing, integrations
-- Customer support, help center, system settings
-- Shared shell with sidebar, mobile nav, theme toggle
-- Dark mode support
-- Mock data in `data/dashboard.json` and `data/mock.ts`
-
-## Getting Started
-
-Requirements: Node.js 20+, npm.
-
-```bash
-npm install
-npm run dev
-```
-
-Open http://localhost:3000.
-
-## Scripts
-
-```bash
-npm run dev     # start dev server
-npm run build   # production build
-npm run start   # run production build
-npm run lint    # run eslint
-```
-
-## Project Structure
-
-```text
-app/                  # routes (dashboard, team, orders, products, etc.)
-  page.tsx            # dashboard home
-  team/page.tsx       # team performance example
-components/
-  dashboard/          # shell, sidebar, cards, charts, tables, dialogs
-  ui/                 # shadcn primitives
-data/
-  dashboard.json      # main dashboard seed data
-  mock.ts             # generated lists (members, tickets, invoices, threads)
-lib/                  # utilities (cn, formatting)
-public/               # static assets
-style-docs/           # UI pattern notes
-```
-
-## Customizing
-
-- Sidebar links: `components/dashboard/sidebar.tsx:27`
-- Current user and team: `data/dashboard.json:2`
-- Team seed data: `data/mock.ts:281`
-- Global styles and theme tokens: `app/globals.css`
+- HugeIcons for icons
+- OpenAI SDK against NVIDIA NIM (OpenAI-compatible) for the staff AI assistant
+- Zod-validated, role-gated AI tools over a repository boundary
 
 ## Conventions
 
