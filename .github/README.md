@@ -9,12 +9,23 @@ website/          # staff dashboard (Next.js 16 App Router)
   app/            # routes (dashboard, patients, billing, AI chat API, etc.)
   components/     # dashboard shell, tables, dialogs, AI assistant
   data/           # seed data (mock hospital dataset)
+  docs/           # DESIGN.md and style-docs/ UI pattern notes
   lib/            # permissions, AI tools, repositories, utils
   public/         # static assets
 patient-app/      # planned patient application (not created yet)
+.github/          # readme and assets
 ROHIT.AGENT.md    # handoff doc (open PR #1)
-style-docs/       # UI pattern notes
 ```
+
+## Screenshots
+
+### Light mode
+
+![Dashboard light mode](assets/screenshots/light.png)
+
+### Dark mode
+
+![Dashboard dark mode](assets/screenshots/dark.png)
 
 ## Getting Started
 
