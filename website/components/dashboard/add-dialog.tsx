@@ -123,14 +123,14 @@ export function AddDialog({
   /** page href, e.g. "/customers" — hides the trigger for read-only roles */
   href?: string;
 }) {
-  const role = useCurrentRole();
-  if (href && !canWrite(href, role)) return null;
   const initial = () =>
     Object.fromEntries(
       fields.map((f) => [f.name, f.options && !f.searchable ? f.options[0] : ""]),
     );
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<Record<string, string>>(initial);
+  const role = useCurrentRole();
+  if (href && !canWrite(href, role)) return null;
 
   const set = (name: string, v: string) => setValues((s) => ({ ...s, [name]: v }));
 
