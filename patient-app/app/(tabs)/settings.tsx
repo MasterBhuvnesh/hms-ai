@@ -1,0 +1,206 @@
+import { SignOutButton } from '@/components/auth/SignOutButton';
+import { AppIcon } from '@/components/global/AppIcon';
+import { BottomFade } from '@/components/global/BottomFade';
+import { Header } from '@/components/global/Header';
+import { colors } from '@/constants/colors';
+import { SettingCardProps } from '@/types';
+import logger from '@/utils/logger';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import LottieView, { AnimationObject } from 'lottie-react-native';
+import {
+  ChevronRight,
+  FileText,
+  HelpCircle,
+  Mail,
+  Menu,
+  MessageCircle,
+  PartyPopper,
+} from 'lucide-react-native';
+import React, { useState } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+// const CELEBRATE = require('@/assets/lottie/celebrate.json');
+// Hand written known-good animation: a pulsing square. If this plays while
+// celebrate.json does not, the player is fine and the bundled asset is at
+// fault. If neither plays, the Lottie native module is not in this build.
+// const MINIMAL = require('@/assets/lottie/minimal-test.json');
+
+const SettingCard = ({ title, items }: SettingCardProps) => (
+  <View className="mb-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg">
+    <View className="border-b border-zinc-100 bg-zinc-50 px-6 py-4">
+      <Text className="font-product text-base text-zinc-800">{title}</Text>
+    </View>
+    <View className="p-2">
+      {items.map((item, index) => (
+        <View key={index}>
+          <TouchableOpacity
+            onPress={item.onPress}
+            className="flex-row items-center justify-between rounded-xl px-4 py-2 active:bg-zinc-50"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center gap-2">
+              <AppIcon Icon={item.icon} size={16} strokeWidth={1.5} />
+              <Text className="font-sans text-base text-zinc-500">
+                {item.label}
+              </Text>
+            </View>
+            <AppIcon
+              Icon={ChevronRight}
+              color={colors.zinc[500]}
+              size={16}
+              strokeWidth={1.5}
+            />
+          </TouchableOpacity>
+          {index < items.length - 1 && (
+            <View className="mx-4 h-px bg-zinc-100" />
+          )}
+        </View>
+      ))}
+    </View>
+  </View>
+);
+
+export default function SettingsPage() {
+  const router = useRouter();
+  // Holds the parsed animation itself, so the button that was pressed is the
+  // animation that renders. It previously held a discriminator string that the
+  // press handlers never actually passed, so both buttons played the probe.
+  const [lottieSource, setLottieSource] = useState<AnimationObject | null>(
+    null
+  );
+  const playLottie = (source: AnimationObject, label: string) => {
+    logger.info(`Diagnostics: overlay mounting (${label})`);
+    setLottieSource(source);
+    // Fixed window so a broken animation cannot hide itself
+    setTimeout(() => {
+      logger.info('Diagnostics: overlay closing');
+      setLottieSource(null);
+    }, 5000);
+  };
+
+  return (
+    <LinearGradient
+      colors={[colors.zinc[50], colors.zinc[100]]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      className="flex-1"
+    >
+      <SafeAreaView className="flex-1 bg-transparent">
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          <Header title="Settings" />
+          <View className="px-6 pb-8 pt-6">
+            {/* Experience Settings */}
+            <SettingCard
+              title="Experience"
+              items={[
+                {
+                  label: 'Newsletters',
+                  onPress: () => logger.debug('Newsletters pressed'),
+                  icon: Mail,
+                },
+              ]}
+            />
+
+            {/* Support Settings */}
+            <SettingCard
+              title="Support"
+              items={[
+                {
+                  label: 'Get Support',
+                  onPress: () => router.push('/screens/get-support'),
+                  icon: HelpCircle,
+                },
+                {
+                  label: 'Send Feedback',
+                  onPress: () => router.push('/screens/send-feedback'),
+                  icon: MessageCircle,
+                },
+                {
+                  label: 'Terms of Use',
+                  onPress: () => router.push('/screens/terms-of-use'),
+                  icon: Menu,
+                },
+                {
+                  label: 'Privacy Policy',
+                  onPress: () => router.push('/screens/privacy-policy'),
+                  icon: FileText,
+                },
+              ]}
+            />
+
+            {/* Account Settings */}
+            {/* <SettingCard
+              title="Account"
+              items={[
+                {
+                  label: 'Change Password',
+                  onPress: () => logger.debug('Change Password pressed'),
+                  icon: Lock,
+                },
+              ]}
+            /> */}
+
+            {/* Diagnostics: proves whether the celebration animation renders
+                on this build, isolated from any quiz or badge logic. */}
+            {/* <SettingCard
+              title="Diagnostics"
+              items={[
+                {
+                  label: 'Test Celebration Animation',
+                  onPress: () => playLottie(CELEBRATE, 'celebrate.json'),
+                  icon: PartyPopper,
+                },
+                {
+                  label: 'Test Minimal Animation',
+                  onPress: () => playLottie(MINIMAL, 'minimal-test.json'),
+                  icon: Box,
+                },
+              ]}
+            /> */}
+
+            {/* Sign Out Button */}
+            <SignOutButton />
+          </View>
+        </ScrollView>
+        <BottomFade />
+
+        {/* Diagnostics overlay: the dimming plus caption prove the overlay
+            mounts, the confetti proves the Lottie draws. Hidden on a timer
+            because an instant onFinish would otherwise hide it silently. */}
+        {lottieSource !== null && (
+          <View style={StyleSheet.absoluteFill} className="bg-black/60">
+            <Text className="pt-24 text-center font-sans text-sm text-white">
+              Animation test: overlay is mounted
+            </Text>
+            {/* autoPlay reaches LottieDrawable.playAnimation on Android, while
+                the ref command reaches resumeAnimation, which is a no-op on a
+                composition that has never started. */}
+            <LottieView
+              source={lottieSource}
+              autoPlay
+              loop={false}
+              style={{ flex: 1 }}
+              onAnimationLoaded={() =>
+                logger.success('Diagnostics: composition parsed and loaded')
+              }
+              onAnimationFailure={error =>
+                logger.error(`Diagnostics: lottie failed: ${error}`)
+              }
+              onAnimationFinish={() =>
+                logger.info('Diagnostics: onAnimationFinish fired')
+              }
+            />
+          </View>
+        )}
+      </SafeAreaView>
+    </LinearGradient>
+  );
+}
