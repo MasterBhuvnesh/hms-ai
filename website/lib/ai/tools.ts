@@ -12,6 +12,12 @@ import {
   prescriptionRepo,
   triageRepo,
 } from "@/lib/repos/hospital";
+import * as supa from "@/lib/repos/supabase";
+import { getSupabase } from "@/lib/supabase";
+
+function hasSupabase(): boolean {
+  return getSupabase() !== null;
+}
 
 const searchPatientsArgs = z.object({
   query: z.string().min(1).describe("Patient id, name, or doctor"),
@@ -50,7 +56,7 @@ type ToolDef = {
   description: string;
   parameters: Record<string, unknown>;
   validate: (args: unknown) => unknown;
-  run: (args: never) => unknown;
+  run: (args: never) => unknown | Promise<unknown>;
 };
 
 function slimPatient(p: {
@@ -89,8 +95,15 @@ export const TOOL_DEFS: ToolDef[] = [
       required: ["query"],
     },
     validate: (a) => searchPatientsArgs.parse(a),
-    run: (a) => {
+    run: async (a) => {
       const args = a as z.infer<typeof searchPatientsArgs>;
+      if (hasSupabase()) {
+        try {
+          return (await supa.searchPatients(args.query, args.limit)).map(slimPatient);
+        } catch {
+          // fall through to JSON
+        }
+      }
       return patientRepo.search(args.query, args.limit).map(slimPatient);
     },
   },
@@ -106,8 +119,37 @@ export const TOOL_DEFS: ToolDef[] = [
       required: ["patient"],
     },
     validate: (a) => patientBriefArgs.parse(a),
-    run: (a) => {
+    run: async (a) => {
       const args = a as z.infer<typeof patientBriefArgs>;
+      if (hasSupabase()) {
+        try {
+          const found = await supa.getPatientsByName(args.patient);
+          if (found.length > 0) {
+            const p = found[0];
+            const [visits, prescriptions, labs] = await Promise.all([
+              supa.listAppointments().then((all) => all.filter((v) => v.patient === p.name)),
+              supa.prescriptionsForPatient(p.name),
+              supa.labList({ patient: p.name }),
+            ]);
+            return {
+              patient: slimPatient(p),
+              visits: visits.map((v) => ({
+                id: v.id, date: v.date, type: v.type, doctor: v.doctor, status: v.status,
+              })),
+              prescriptions: prescriptions.map((r) => ({
+                id: r.id, date: r.date, diagnosis: r.diagnosis,
+                medicines: r.medicines.map((m) => `${m.name} ${m.dosage} x ${m.duration}`),
+                status: r.status,
+              })),
+              labs: labs.map((l) => ({
+                id: l.id, test: l.test, result: l.result, status: l.status,
+              })),
+            };
+          }
+        } catch {
+          // fall through to JSON
+        }
+      }
       const found = patientRepo.getByName(args.patient);
       if (found.length === 0) return { error: "patient_not_found" };
       const p = found[0];
@@ -138,7 +180,16 @@ export const TOOL_DEFS: ToolDef[] = [
       },
     },
     validate: (a) => bedAvailabilityArgs.parse(a),
-    run: (a) => bedRepo.availability((a as z.infer<typeof bedAvailabilityArgs>).ward),
+    run: async (a) => {
+      if (hasSupabase()) {
+        try {
+          return await supa.bedAvailability((a as z.infer<typeof bedAvailabilityArgs>).ward);
+        } catch {
+          // fall through
+        }
+      }
+      return bedRepo.availability((a as z.infer<typeof bedAvailabilityArgs>).ward);
+    },
   },
   {
     name: "list_appointments",
@@ -152,12 +203,21 @@ export const TOOL_DEFS: ToolDef[] = [
       },
     },
     validate: (a) => appointmentsArgs.parse(a),
-    run: (a) => {
+    run: async (a) => {
       const args = a as z.infer<typeof appointmentsArgs>;
-      return appointmentRepo.list(args).map((v) => ({
-        id: v.id, patient: v.patient, doctor: v.doctor, department: v.department,
-        when: `${v.date} ${v.time}`, type: v.type, status: v.status,
-      }));
+      const mapRows = (rows: { id: string; patient: string; doctor: string; department: string; date: string; time: string; type: string; status: string }[]) =>
+        rows.map((v) => ({
+          id: v.id, patient: v.patient, doctor: v.doctor, department: v.department,
+          when: `${v.date} ${v.time}`, type: v.type, status: v.status,
+        }));
+      if (hasSupabase()) {
+        try {
+          return mapRows(await supa.listAppointments(args));
+        } catch {
+          // fall through
+        }
+      }
+      return mapRows(appointmentRepo.list(args));
     },
   },
   {
@@ -166,7 +226,16 @@ export const TOOL_DEFS: ToolDef[] = [
     description: "Totals grouped by bill status: counts and amounts in rupees.",
     parameters: { type: "object", properties: {} },
     validate: (a) => noArgs.parse(a),
-    run: () => billingRepo.summary(),
+    run: async () => {
+      if (hasSupabase()) {
+        try {
+          return await supa.billingSummary();
+        } catch {
+          // fall through
+        }
+      }
+      return billingRepo.summary();
+    },
   },
   {
     name: "lab_lookup",
@@ -180,12 +249,21 @@ export const TOOL_DEFS: ToolDef[] = [
       },
     },
     validate: (a) => labArgs.parse(a),
-    run: (a) => {
+    run: async (a) => {
       const args = a as z.infer<typeof labArgs>;
-      return labRepo.list(args).map((l) => ({
-        id: l.id, patient: l.patient, test: l.test,
-        result: l.result, status: l.status, date: l.date,
-      }));
+      const mapRows = (rows: { id: string; patient: string; test: string; result: string; status: string; date: string }[]) =>
+        rows.map((l) => ({
+          id: l.id, patient: l.patient, test: l.test,
+          result: l.result, status: l.status, date: l.date,
+        }));
+      if (hasSupabase()) {
+        try {
+          return mapRows(await supa.labList(args));
+        } catch {
+          // fall through
+        }
+      }
+      return mapRows(labRepo.list(args));
     },
   },
   {
@@ -194,10 +272,21 @@ export const TOOL_DEFS: ToolDef[] = [
     description: "Current emergency triage waiting queue.",
     parameters: { type: "object", properties: {} },
     validate: (a) => noArgs.parse(a),
-    run: () => triageRepo.waiting().map((t) => ({
-      id: t.id, patient: t.patient, severity: t.severity,
-      complaint: t.complaint, wait_mins: t.waitMins, doctor: t.doctor,
-    })),
+    run: async () => {
+      const mapRows = (rows: { id: string; patient: string; severity: string; complaint: string; waitMins: number; doctor: string }[]) =>
+        rows.map((t) => ({
+          id: t.id, patient: t.patient, severity: t.severity,
+          complaint: t.complaint, wait_mins: t.waitMins, doctor: t.doctor,
+        }));
+      if (hasSupabase()) {
+        try {
+          return mapRows(await supa.triageWaiting());
+        } catch {
+          // fall through
+        }
+      }
+      return mapRows(triageRepo.waiting());
+    },
   },
   {
     name: "pharmacy_alerts",
@@ -205,9 +294,20 @@ export const TOOL_DEFS: ToolDef[] = [
     description: "Medicines low or out of stock.",
     parameters: { type: "object", properties: {} },
     validate: (a) => noArgs.parse(a),
-    run: () => pharmacyRepo.lowStock().map((m) => ({
-      name: m.name, sku: m.sku, stock: m.stock, status: m.status,
-    })),
+    run: async () => {
+      const mapRows = (rows: { name: string; sku: string; stock: number; status: string }[]) =>
+        rows.map((m) => ({
+          name: m.name, sku: m.sku, stock: m.stock, status: m.status,
+        }));
+      if (hasSupabase()) {
+        try {
+          return mapRows(await supa.pharmacyLowStock());
+        } catch {
+          // fall through
+        }
+      }
+      return mapRows(pharmacyRepo.lowStock());
+    },
   },
 ];
 

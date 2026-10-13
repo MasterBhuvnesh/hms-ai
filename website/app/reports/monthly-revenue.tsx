@@ -27,9 +27,9 @@ export function MonthlyRevenue() {
       <div className="flex-1 rounded-xl bg-card p-4">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">
-            Revenue per month ($k) :
+            Revenue per month (₹k) :
             <span className="ml-2 font-mono text-2xl font-semibold tracking-tight text-foreground">
-              ${total}k
+              ₹{total}k
             </span>
           </p>
           <div className="flex items-center gap-3">

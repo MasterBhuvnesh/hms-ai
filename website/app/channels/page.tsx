@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon, RefreshIcon, Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,8 @@ import { Shell } from "@/components/dashboard/shell";
 import { AddDialog, type Field } from "@/components/dashboard/add-dialog";
 import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
 import { beds as seedBeds, type Bed } from "@/data/hospital";
+import { getSupabase } from "@/lib/supabase";
+import { addBed, deleteBed, listBeds, updateBed } from "@/lib/repos/supabase";
 import { scoreVitals, vitalsFor } from "@/lib/icu";
 
 const BED_FIELDS: Field[] = [
@@ -110,19 +112,18 @@ function BedsTable({ rows, onChange }: { rows: Bed[]; onChange: (rows: Bed[]) =>
         }
         onSave={(v) => {
           if (!editRow) return;
+          const next = {
+            ward: v.ward as Bed["ward"],
+            patient: v.patient.trim() || editRow.patient,
+            doctor: v.doctor.trim() || editRow.doctor,
+            status: v.status as Bed["status"],
+          };
           onChange(
-            rows.map((r) =>
-              r.id === editRow.id
-                ? {
-                    ...r,
-                    ward: v.ward as Bed["ward"],
-                    patient: v.patient.trim() || r.patient,
-                    doctor: v.doctor.trim() || r.doctor,
-                    status: v.status as Bed["status"],
-                  }
-                : r,
-            ),
+            rows.map((r) => (r.id === editRow.id ? { ...r, ...next } : r)),
           );
+          if (getSupabase()) {
+            void updateBed(editRow.id, next).catch(() => {});
+          }
         }}
       />
       <DeleteConfirm
@@ -132,7 +133,11 @@ function BedsTable({ rows, onChange }: { rows: Bed[]; onChange: (rows: Bed[]) =>
         description={deleteRow ? `This will permanently remove bed ${deleteRow.id}. This action cannot be undone.` : undefined}
         onConfirm={() => {
           if (!deleteRow) return;
-          onChange(rows.filter((r) => r.id !== deleteRow.id));
+          const id = deleteRow.id;
+          onChange(rows.filter((r) => r.id !== id));
+          if (getSupabase()) {
+            void deleteBed(id).catch(() => {});
+          }
         }}
       />
     </Card>
@@ -210,6 +215,15 @@ function IcuWatch({ rows }: { rows: Bed[] }) {
 export default function BedsPage() {
   const [bedList, setBedList] = useState<Bed[]>(seedBeds);
 
+  useEffect(() => {
+    if (!getSupabase()) return;
+    listBeds()
+      .then((rows) => {
+        if (rows.length > 0) setBedList(rows);
+      })
+      .catch(() => {});
+  }, []);
+
   const occupied = bedList.filter((b) => b.status === "Occupied").length;
   const available = bedList.filter((b) => b.status === "Available").length;
   const cleaning = bedList.filter((b) => b.status === "Cleaning").length;
@@ -235,19 +249,23 @@ export default function BedsPage() {
             { name: "ward", label: "Ward", options: ["ICU", "General", "Emergency", "Pediatrics", "Maternity"] },
             { name: "status", label: "Status", options: ["Occupied", "Available", "Cleaning", "Maintenance"] },
           ]}
-          onSubmit={(v) =>
-            setBedList((prev) => [
-              ...prev,
-              {
-                id: `B-${101 + prev.length}`,
-                ward: v.ward as Bed["ward"],
-                patient: v.status === "Occupied" ? v.patient.trim() || "-" : "-",
-                doctor: v.doctor.trim() || "Dr. Aditi Rao",
-                since: "Nov 2025",
-                status: v.status as Bed["status"],
-              },
-            ])
-          }
+          onSubmit={(v) => {
+            const nums = bedList
+              .map((b) => Number(String(b.id).split("-")[1]))
+              .filter((n) => Number.isFinite(n));
+            const bed: Bed = {
+              id: `B-${(nums.length > 0 ? Math.max(...nums) : 100) + 1}`,
+              ward: v.ward as Bed["ward"],
+              patient: v.status === "Occupied" ? v.patient.trim() || "-" : "-",
+              doctor: v.doctor.trim() || "Dr. Aditi Rao",
+              since: "Nov 2025",
+              status: v.status as Bed["status"],
+            };
+            setBedList((prev) => [...prev, bed]);
+            if (getSupabase()) {
+              void addBed(bed).catch(() => {});
+            }
+          }}
           trigger={
             <Button size="lg">
               <HugeiconsIcon icon={PlusSignIcon} size={14} data-icon="inline-start" />

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { initials, MoreButton, PanelTitle } from "@/components/dashboard/cards";
+import { useCurrentRole } from "@/components/dashboard/use-current-role";
 import type { ChatMessage, Conversation } from "@/data/mock";
 
 const SUGGESTIONS = ["Send tracking link", "Share invoice copy", "Ask for a review"];
@@ -28,6 +29,8 @@ export function MessagesView({
 }) {
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
+  const [aiLoading, setAiLoading] = useState<string | null>(null);
+  const role = useCurrentRole();
 
   const active = convos.find((c) => c.id === activeId);
   const thread = threadMap[activeId] ?? [];
@@ -45,9 +48,37 @@ export function MessagesView({
   function send() {
     const text = draft.trim();
     if (!text) return;
+    appendSent(text);
+    setDraft("");
+  }
+
+  function appendSent(text: string) {
     setThreadMap((m) => ({ ...m, [activeId]: [...(m[activeId] ?? []), { from: "me", text, time: "Now" }] }));
     setConvos((cs) => cs.map((c) => (c.id === activeId ? { ...c, preview: text, time: "Now" } : c)));
-    setDraft("");
+  }
+
+  async function sendAi(intent: string) {
+    if (aiLoading) return;
+    setAiLoading(intent);
+    try {
+      const res = await fetch("/api/ai/reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          intent,
+          patient: active?.name ?? "the patient",
+          role,
+          history: thread.map((m) => ({ from: m.from, text: m.text })),
+        }),
+      });
+      const data = (await res.json()) as { reply?: string; error?: string };
+      if (!res.ok || !data.reply) throw new Error(data.error || "ai_failed");
+      appendSent(data.reply);
+    } catch {
+      setDraft(intent);
+    } finally {
+      setAiLoading(null);
+    }
   }
 
   return (
@@ -137,18 +168,36 @@ export function MessagesView({
             })}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-2 border-t pt-4">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border bg-card">
-              <HugeiconsIcon icon={AiMagicIcon} size={14} />
-            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Generate AI reply"
+              title="Generate AI reply"
+              disabled={aiLoading !== null}
+              onClick={() =>
+                sendAi(
+                  draft.trim() ||
+                    `Reply to the last message from ${active?.name ?? "the patient"}`
+                )
+              }
+              className="size-7 shrink-0 rounded-lg"
+            >
+              <HugeiconsIcon
+                icon={AiMagicIcon}
+                size={14}
+                className={aiLoading ? "animate-pulse" : undefined}
+              />
+            </Button>
             {SUGGESTIONS.map((reply) => (
               <Button
                 key={reply}
-                onClick={() => setDraft(reply)}
+                onClick={() => void sendAi(reply)}
+                disabled={aiLoading !== null}
                 variant="outline"
                 size="sm"
                 className="rounded-full font-normal text-muted-foreground"
               >
-                {reply}
+                {aiLoading === reply ? "Writing..." : reply}
               </Button>
             ))}
           </div>
