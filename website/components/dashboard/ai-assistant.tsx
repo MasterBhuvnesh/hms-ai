@@ -6,6 +6,7 @@ import { AiMagicIcon, Cancel01Icon, SentIcon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { ChatMarkdown } from "@/components/dashboard/chat-markdown";
 import { useCurrentRole } from "@/components/dashboard/use-current-role";
 import data from "@/data/dashboard.json";
 
@@ -24,7 +25,7 @@ export function AiAssistant() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: "assistant", content: `Hi ${data.user.firstName}, I can look up hospital data for your role (${role}). What do you need?` },
+    { role: "assistant", content: "Hi. Ask me anything I can see for your current role." },
   ]);
 
   async function send(text: string) {
@@ -71,11 +72,15 @@ export function AiAssistant() {
             {msgs.map((m, i) => (
               <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
                 <span
-                  className={`inline-block max-w-[90%] rounded-xl px-3 py-2 text-sm ${
+                  className={`inline-block max-w-[90%] rounded-xl px-3 py-2 text-left ${
                     m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
                   }`}
                 >
-                  {m.content}
+                  {m.role === "user" ? (
+                    <span className="text-sm">{m.content}</span>
+                  ) : (
+                    <ChatMarkdown text={m.content} />
+                  )}
                 </span>
               </div>
             ))}

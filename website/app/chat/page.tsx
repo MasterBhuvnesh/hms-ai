@@ -6,6 +6,7 @@ import { AiMagicIcon, Delete01Icon, SentIcon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ChatMarkdown } from "@/components/dashboard/chat-markdown";
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
 import { Shell } from "@/components/dashboard/shell";
 import { useCurrentRole } from "@/components/dashboard/use-current-role";
@@ -40,7 +41,7 @@ function ChatScreen() {
   const starters = STARTERS.filter((s) => canAccess(s.href, role));
   const topics = Object.entries(TOPIC_LABELS).filter(([href]) => allowed.includes(href));
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: "assistant", content: `Hi ${data.user.firstName}, you are acting as ${role}. Ask me anything I can see for this role.` },
+    { role: "assistant", content: "Hi. Ask me anything I can see for your current role - the chips above show your allowed topics." },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -112,11 +113,15 @@ function ChatScreen() {
             {msgs.map((m, i) => (
               <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
                 <span
-                  className={`inline-block max-w-[90%] rounded-xl px-3 py-2 text-sm ${
+                  className={`inline-block max-w-full rounded-xl px-3 py-2 text-left ${
                     m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
                   }`}
                 >
-                  {m.content}
+                  {m.role === "user" ? (
+                    <span className="text-sm">{m.content}</span>
+                  ) : (
+                    <ChatMarkdown text={m.content} />
+                  )}
                 </span>
               </div>
             ))}
