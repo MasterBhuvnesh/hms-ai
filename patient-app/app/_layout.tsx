@@ -14,7 +14,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const publishableKey =
+  process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ??
+  'pk_test_d2VsbC1mbGFtaW5nby00MDAxLmNsZXJrLmFjY291bnRzLmRldiQ';
 
 if (!publishableKey) {
   throw new Error(

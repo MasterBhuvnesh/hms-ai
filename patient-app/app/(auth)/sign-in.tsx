@@ -111,9 +111,11 @@ export default function SignInScreen() {
                 </View>
               ) : null}
 
+              {/* DEBUG: OAuth buttons disabled for blank-screen bisect
               <View className="mb-6">
                 <OAuthButtons onError={setError} />
               </View>
+              */}
 
               <View className="ml-6 mr-6 flex-row items-center gap-4">
                 <View className="h-px flex-1 bg-zinc-200" />

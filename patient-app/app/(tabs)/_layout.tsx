@@ -1,12 +1,14 @@
 import { AppIcon } from '@/components/global/AppIcon';
 import { colors } from '@/constants/colors';
+import { useEnsurePatient } from '@/hooks/useEnsurePatient';
 import { useAuth } from '@clerk/clerk-expo';
 import { Tabs } from 'expo-router';
-import { Home, Package, Settings, User } from 'lucide-react-native';
+import { FolderOpen, Home, Settings, User } from 'lucide-react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   const { isSignedIn } = useAuth();
+  useEnsurePatient();
 
   return (
     <SafeAreaProvider>
@@ -50,10 +52,10 @@ export default function TabLayout() {
           <Tabs.Screen
             name="resources"
             options={{
-              tabBarLabel: 'Resources',
+              tabBarLabel: 'Records',
               tabBarIcon: ({ color, size }) => (
                 <AppIcon
-                  Icon={Package}
+                  Icon={FolderOpen}
                   color={typeof color === 'string' ? color : undefined}
                   size={size}
                   strokeWidth={1.5}

@@ -4,6 +4,12 @@ export default function ScreensLayout() {
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="appointments" />
+        <Stack.Screen name="prescriptions" />
+        <Stack.Screen name="labs" />
+        <Stack.Screen name="bills" />
+        <Stack.Screen name="edit-profile" />
+        <Stack.Screen name="edit-bio" />
         <Stack.Screen name="pdfs" />
         <Stack.Screen name="content" />
         <Stack.Screen name="[id]" />

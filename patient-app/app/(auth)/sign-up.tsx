@@ -1,7 +1,9 @@
 import OAuthButtons from '@/components/auth/OAuthButtons';
 import { AppIcon } from '@/components/global/AppIcon';
 import { colors } from '@/constants/colors';
+import { ensurePatientForClerk } from '@/lib/patients';
 import logger from '@/utils/logger';
+import { supabase } from '@/utils/supabase';
 import { useSignUp } from '@clerk/clerk-expo';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -63,6 +65,17 @@ export default function SignUpScreen() {
 
       if (signUpAttempt.status === 'complete') {
         await setActive({ session: signUpAttempt.createdSessionId });
+        try {
+          const clerkUserId = signUpAttempt.createdUserId;
+          if (clerkUserId) {
+            await ensurePatientForClerk(supabase, {
+              clerkUserId,
+              email: emailAddress,
+            });
+          }
+        } catch (linkErr) {
+          logger.error(`Patient link failed: ${linkErr instanceof Error ? linkErr.message : linkErr}`);
+        }
         router.replace('/(tabs)');
       } else {
         logger.error(JSON.stringify(signUpAttempt, null, 2));

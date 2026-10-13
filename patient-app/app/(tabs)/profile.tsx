@@ -4,9 +4,17 @@ import { Header } from '@/components/global/Header';
 import { GamificationCard } from '@/components/profile/GamificationCard';
 import { colors } from '@/constants/colors';
 import { getMyProgress } from '@/lib/api';
+import {
+  ensurePatientForClerk,
+  getAppointmentsForPatient,
+  getLabsForPatient,
+  getPrescriptionsForPatient,
+  type PatientRow,
+} from '@/lib/patients';
 import { ProfileCardProps } from '@/types';
 import type { MyProgress } from '@/types';
 import logger from '@/utils/logger';
+import { createClerkSupabaseClient } from '@/utils/supabase';
 import { useAuth, useUser } from '@clerk/clerk-expo';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -93,6 +101,19 @@ export default function ProfilePage() {
   const [progressLoading, setProgressLoading] = useState(true);
   const [progressError, setProgressError] = useState<string | null>(null);
 
+  const [patient, setPatient] = useState<PatientRow | null>(null);
+  const [patientLoading, setPatientLoading] = useState(true);
+  const [patientError, setPatientError] = useState<string | null>(null);
+  const [appointments, setAppointments] = useState<
+    { id: string; date: string; time: string; doctor: string; status: string; type: string }[]
+  >([]);
+  const [prescriptions, setPrescriptions] = useState<
+    { id: string; date: string; diagnosis: string; status: string; prescription_medicines: { name: string; dosage: string; duration: string }[] }[]
+  >([]);
+  const [labs, setLabs] = useState<
+    { id: string; test: string; result: string; status: string; date: string }[]
+  >([]);
+
   // Clerk does not guarantee getToken is referentially stable. Reading it
   // through a ref keeps fetchProgress, and therefore the mount effect below,
   // from being rebuilt on every render this fetch causes itself. That
@@ -137,14 +158,54 @@ export default function ProfilePage() {
     void fetchProgress();
   }, [fetchProgress]);
 
+  const fetchPatientData = useCallback(async () => {
+    try {
+      setPatientLoading(true);
+      setPatientError(null);
+
+      const clerkToken = await getTokenRef.current();
+      if (!clerkToken) throw new Error('Authentication required. Please sign in.');
+      const client = createClerkSupabaseClient(async () => clerkToken);
+      if (!user?.id) throw new Error('User not loaded.');
+
+      const row = await ensurePatientForClerk(client, {
+        clerkUserId: user.id,
+        email: user.emailAddresses[0]?.emailAddress ?? null,
+        fullName: user.fullName ?? null,
+      });
+      setPatient(row);
+
+      const [appts, rx, labRows] = await Promise.all([
+        getAppointmentsForPatient(client, row.name),
+        getPrescriptionsForPatient(client, row.name),
+        getLabsForPatient(client, row.name),
+      ]);
+      setAppointments((appts as typeof appointments).slice(0, 5));
+      setPrescriptions((rx as typeof prescriptions).slice(0, 5));
+      setLabs((labRows as typeof labs).slice(0, 5));
+      logger.success('Patient record loaded successfully');
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load patient record';
+      setPatientError(errorMessage);
+      logger.error(`Error loading patient record: ${errorMessage}`);
+    } finally {
+      setPatientLoading(false);
+    }
+  }, [user?.id, user?.fullName]);
+
+  useEffect(() => {
+    if (user?.id) void fetchPatientData();
+  }, [user?.id, fetchPatientData]);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await fetchProgress();
+      await Promise.all([fetchProgress(), fetchPatientData()]);
     } finally {
       setRefreshing(false);
     }
-  }, [fetchProgress]);
+  }, [fetchProgress, fetchPatientData]);
 
   return (
     <LinearGradient
@@ -217,6 +278,121 @@ export default function ProfilePage() {
             error={progressError}
             onRetry={() => void fetchProgress()}
           />
+
+          <View className="mb-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg">
+            <View className="p-6">
+              <Text className="mb-1 font-product text-base text-zinc-800">
+                Patient Record
+              </Text>
+              {patientLoading ? (
+                <Text className="font-sans text-sm text-zinc-500">Loading record...</Text>
+              ) : patientError ? (
+                <View>
+                  <Text className="mb-3 font-sans text-sm text-red-500">{patientError}</Text>
+                  <TouchableOpacity
+                    onPress={() => void fetchPatientData()}
+                    className="self-start rounded-lg bg-zinc-800 px-4 py-2"
+                    activeOpacity={0.7}
+                  >
+                    <Text className="font-product text-sm text-white">Retry</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : !patient ? (
+                <Text className="font-sans text-sm text-zinc-500">
+                  No linked patient record yet.
+                </Text>
+              ) : (
+                <View className="gap-1.5">
+                  <Text className="font-sans text-sm text-zinc-600">
+                    {patient.id} - {patient.name}, {patient.age} yrs, {patient.gender}
+                  </Text>
+                  <Text className="font-sans text-sm text-zinc-600">
+                    Blood {patient.blood} - {patient.phone || 'No phone on file'}
+                  </Text>
+                  <Text className="font-sans text-sm text-zinc-600">
+                    {patient.doctor} - {patient.department} - {patient.status}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View className="mb-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg">
+            <View className="p-6">
+              <Text className="mb-3 font-product text-base text-zinc-800">
+                Appointments
+              </Text>
+              {appointments.length === 0 ? (
+                <Text className="font-sans text-sm text-zinc-500">No appointments found.</Text>
+              ) : (
+                <View className="gap-2">
+                  {appointments.map((a) => (
+                    <View key={a.id} className="rounded-lg bg-zinc-50 p-3">
+                      <Text className="font-product text-sm text-zinc-800">
+                        {a.date} {a.time} - {a.doctor}
+                      </Text>
+                      <Text className="font-sans text-xs text-zinc-500">
+                        {a.id} - {a.type} - {a.status}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View className="mb-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg">
+            <View className="p-6">
+              <Text className="mb-3 font-product text-base text-zinc-800">
+                Prescriptions
+              </Text>
+              {prescriptions.length === 0 ? (
+                <Text className="font-sans text-sm text-zinc-500">No prescriptions found.</Text>
+              ) : (
+                <View className="gap-2">
+                  {prescriptions.map((r) => (
+                    <View key={r.id} className="rounded-lg bg-zinc-50 p-3">
+                      <Text className="font-product text-sm text-zinc-800">
+                        {r.date} - {r.diagnosis}
+                      </Text>
+                      <Text className="font-sans text-xs text-zinc-500">
+                        {r.id} - {r.status}
+                      </Text>
+                      {r.prescription_medicines.map((m, i) => (
+                        <Text key={i} className="font-sans text-xs text-zinc-600">
+                          {m.name} {m.dosage} x {m.duration}
+                        </Text>
+                      ))}
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View className="mb-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg">
+            <View className="p-6">
+              <Text className="mb-3 font-product text-base text-zinc-800">
+                Lab Reports
+              </Text>
+              {labs.length === 0 ? (
+                <Text className="font-sans text-sm text-zinc-500">No lab reports found.</Text>
+              ) : (
+                <View className="gap-2">
+                  {labs.map((l) => (
+                    <View key={l.id} className="rounded-lg bg-zinc-50 p-3">
+                      <Text className="font-product text-sm text-zinc-800">
+                        {l.test} - {l.result}
+                      </Text>
+                      <Text className="font-sans text-xs text-zinc-500">
+                        {l.id} - {l.status} - {l.date}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          </View>
 
           {/* Dev token logger, commented out at the owner's request.
               Uncomment with the useLogTokenDev import and hook above. */}
