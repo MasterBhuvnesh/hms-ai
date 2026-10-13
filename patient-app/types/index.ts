@@ -9,7 +9,6 @@ export type {
   DownloadedItem,
   DownloadedPdfInfoProps,
   OAuthButtonsProps,
-  OnboardingScreenProps,
   PdfItem,
   ProfileCardProps,
   ResourceCardProps,

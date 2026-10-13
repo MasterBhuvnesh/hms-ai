@@ -58,7 +58,7 @@ function RootLayoutNav() {
     /**
      * Navigation Priority:
      * 1. If signed in -> Go to tabs
-     * 2. If not signed in -> Go to auth (which starts at onboarding)
+     * 2. If not signed in -> Go to auth (which starts at sign-in)
      */
 
     let targetRoute: string | null = null;
@@ -70,9 +70,9 @@ function RootLayoutNav() {
         logger.info('User signed in, navigating to tabs');
       }
     } else {
-      // User is not signed in - go to auth (starts at onboarding)
+      // User is not signed in - go to auth (starts at sign-in)
       if (!inAuth) {
-        targetRoute = '/(auth)/onboarding';
+        targetRoute = '/(auth)/sign-in';
         logger.info('User not signed in, navigating to auth');
       }
     }

@@ -1,16 +1,6 @@
 import { ImageSource } from 'expo-image';
 
 /**
- * Props for the OnboardingScreen component
- */
-export interface OnboardingScreenProps {
-  title: string;
-  description: string;
-  gradientColors: string[];
-  imageSource?: any; // Can be require() or URI string for jpg, png, svg, gif
-}
-
-/**
  * Props for the OAuthButtons component
  */
 export interface OAuthButtonsProps {

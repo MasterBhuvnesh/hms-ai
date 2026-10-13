@@ -97,7 +97,7 @@ export default function ProfilePage() {
   // through a ref keeps fetchProgress, and therefore the mount effect below,
   // from being rebuilt on every render this fetch causes itself. That
   // rebuild loop was hammering /progress/me until the global rate limiter
-  // cut the app off. Same pattern as NotificationContext.
+  // cut the app off.
   const getTokenRef = useRef(getToken);
   useEffect(() => {
     getTokenRef.current = getToken;

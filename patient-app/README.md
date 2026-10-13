@@ -62,15 +62,14 @@ physical device, or `http://10.0.2.2:4000` for an Android emulator.
 
 ```
 app/            Expo Router routes. The directory tree is the URL structure.
-  (auth)/       Onboarding, sign in, sign up, password reset
+  (auth)/       Sign in, sign up, password reset
   (tabs)/       The four tab screens: home, resources, profile, settings
   screens/      Everything reached by pushing, outside the tab bar
-components/     Grouped by feature: auth, content, profile, onboarding, global
+components/     Grouped by feature: auth, content, profile, global
 constants/      colors.ts, the palette imported where a Tailwind class cannot reach
-contexts/       NotificationContext
-hooks/          useCustomFonts, useCustomAlert, useNotificationPermissions,
-                usePdfDownloads
-lib/            api.ts, download.ts, notifications.ts, storage.ts, inapp.ts
+contexts/       App-wide providers
+hooks/          useCustomFonts, useCustomAlert, usePdfDownloads
+lib/            api.ts, download.ts, storage.ts, inapp.ts
 types/          Shared types, including the backend response shapes in api.ts
 utils/          config.ts, logger.ts, jwt.dev.ts
 assets/         fonts, icons, images, lottie
@@ -80,7 +79,7 @@ assets/         fonts, icons, images, lottie
 
 Three route groups, guarded in three places. `app/_layout.tsx` runs the
 redirect that sends signed in users to `(tabs)` and everyone else to
-`(auth)/onboarding`. Standalone `screens/` routes are deliberately skipped by
+`(auth)/sign-in`. Standalone `screens/` routes are deliberately skipped by
 that redirect so a deep link can land on one directly.
 
 Typed routes are on (`app.json` -> `experiments.typedRoutes`), so a route
@@ -99,25 +98,6 @@ splash screen is held until they resolve or fail:
 | `ProductSans-Bold`  | `ProductSansBold.ttf`    |
 
 These are local files. Do not add `@expo-google-fonts` packages for them.
-
-## ADDING AN ONBOARDING SLIDE
-
-Slides come from the `onboardingData` array in `app/(auth)/onboarding.tsx`.
-Append an entry:
-
-```ts
-{
-  id: '4',
-  title: 'Your title',
-  description: 'One or two sentences.',
-  gradientColors,
-  imageSource: 'https://studzee-assets.s3.ap-south-1.amazonaws.com/assets/Your+Image.png',
-}
-```
-
-`imageSource` is passed straight to `expo-image`, which accepts a bare URL
-string, a `{ uri }` object, or the result of `require('@/assets/images/x.png')`
-for a bundled image. The existing three slides all use remote S3 URLs.
 
 ## BUILDS AND RELEASES
 
