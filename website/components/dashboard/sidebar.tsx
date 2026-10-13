@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import type { IconSvgElement } from "@hugeicons/react";
 import {
   Analytics01Icon,
+  AiMagicIcon,
   CreditCardIcon,
   CustomerSupportIcon,
   Home01Icon,
@@ -65,6 +66,7 @@ const sections: { title: string; items: NavItem[] }[] = [
   {
     title: "Insights",
     items: [
+      { label: "AI Assistant", icon: AiMagicIcon, href: "/chat" },
       { label: "Reports & Analytics", icon: Analytics01Icon, href: "/reports" },
       { label: "Messages", icon: Message01Icon, href: "/messages" },
       { label: "Integrations", icon: PuzzleIcon, href: "/integrations" },

@@ -52,6 +52,7 @@ const ALL_HREFS = [
   "/support",
   "/help",
   "/settings",
+  "/chat",
 ];
 
 export const ROLE_NAV_ACCESS: Record<HospitalRole, string[]> = {
@@ -71,6 +72,7 @@ export const ROLE_NAV_ACCESS: Record<HospitalRole, string[]> = {
     "/messages",
     "/support",
     "/help",
+    "/chat",
   ],
   Nurse: [
     "/",
@@ -86,6 +88,7 @@ export const ROLE_NAV_ACCESS: Record<HospitalRole, string[]> = {
     "/messages",
     "/support",
     "/help",
+    "/chat",
   ],
   Receptionist: [
     "/",
@@ -97,6 +100,7 @@ export const ROLE_NAV_ACCESS: Record<HospitalRole, string[]> = {
     "/messages",
     "/support",
     "/help",
+    "/chat",
   ],
   "Billing Staff": [
     "/",
@@ -108,6 +112,7 @@ export const ROLE_NAV_ACCESS: Record<HospitalRole, string[]> = {
     "/messages",
     "/support",
     "/help",
+    "/chat",
   ],
   Pharmacist: [
     "/",
@@ -116,8 +121,9 @@ export const ROLE_NAV_ACCESS: Record<HospitalRole, string[]> = {
     "/messages",
     "/support",
     "/help",
+    "/chat",
   ],
-  "Lab Tech": ["/", "/lab", "/messages", "/support", "/help"],
+  "Lab Tech": ["/", "/lab", "/messages", "/support", "/help", "/chat"],
 };
 
 export function canAccess(href: string | undefined, role: string): boolean {
@@ -155,6 +161,7 @@ export const ACTIVE_HREFS: Record<string, string> = {
   "Customer Support": "/support",
   "Help Center": "/help",
   "System Settings": "/settings",
+  "AI Assistant": "/chat",
 };
 
 // Hrefs where a role may create/update. Delete is Admin + Management only.
