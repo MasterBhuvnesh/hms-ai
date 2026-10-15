@@ -42,19 +42,31 @@ export function TransactionsTable<T extends Transaction>({
   onEdit,
   onDelete,
   href,
+  selected,
+  onToggle,
+  onToggleAll,
 }: {
   transactions: T[];
   sort?: { sortKey: string | null; toggleSort: (key: string) => void };
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   href?: string;
+  selected?: Set<string>;
+  onToggle?: (id: string, checked: boolean) => void;
+  onToggleAll?: (ids: string[], checked: boolean) => void;
 }) {
+  const allIds = transactions.map((tx) => tx.id);
+  const allChecked = allIds.length > 0 && allIds.every((id) => selected?.has(id));
   return (
     <Table>
       <TableHeader>
         <TableRow className="hover:bg-transparent">
           <TableHead className="w-12 pl-4">
-            <Checkbox aria-label="Select all" />
+            <Checkbox
+              aria-label="Select all"
+              checked={allChecked}
+              onCheckedChange={(v) => onToggleAll?.(allIds, v === true)}
+            />
           </TableHead>
           {sort
             ? COLUMNS.map((c) => <Th key={c.k} label={c.label} k={c.k} sort={sort} />)
@@ -84,7 +96,11 @@ export function TransactionsTable<T extends Transaction>({
           return (
             <TableRow key={tx.id} className={refunded ? "opacity-60" : ""}>
               <TableCell className="pl-4">
-                <Checkbox aria-label={`Select ${tx.id}`} />
+                <Checkbox
+                  aria-label={`Select ${tx.id}`}
+                  checked={selected?.has(tx.id) ?? false}
+                  onCheckedChange={(v) => onToggle?.(tx.id, v === true)}
+                />
               </TableCell>
               <TableCell className="font-mono text-muted-foreground">{tx.id}</TableCell>
               <TableCell className="font-medium">{tx.customer}</TableCell>

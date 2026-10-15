@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { MoreButton, PanelTitle } from "@/components/dashboard/cards";
 import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { DeleteConfirm, EditDialog } from "@/components/dashboard/row-actions";
+import { BulkBar, useSelection } from "@/components/dashboard/bulk-bar";
+import { downloadCsv } from "@/lib/export-csv";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { TransactionsTable } from "@/components/dashboard/transactions-table";
 import { FilterPills, num, useDataTable } from "@/components/dashboard/use-table";
@@ -33,6 +35,7 @@ export function TransactionsView({
   const [rows, setRows] = useState<Transaction[]>(transactionsSeed);
   const [editRow, setEditRow] = useState<Transaction | null>(null);
   const [deleteRow, setDeleteRow] = useState<Transaction | null>(null);
+  const selection = useSelection();
   const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.customer, r.product],
     filterField: (r) => r.status,
@@ -127,12 +130,34 @@ export function TransactionsView({
         </div>
       </div>
       <div className="overflow-hidden rounded-xl bg-card py-2">
+        <BulkBar
+          count={selection.selected.size}
+          onExport={() =>
+            downloadCsv(
+              "payments-selected",
+              [
+                ["ID", "Patient", "Service", "Status", "Qty", "Unit Price", "Amount"],
+                ...rows
+                  .filter((r) => selection.selected.has(r.id))
+                  .map((r) => [r.id, r.customer, r.product, r.status, r.qty, r.unitPrice, r.totalRevenue]),
+              ],
+            )
+          }
+          onDelete={() => {
+            setRows((r) => r.filter((tx) => !selection.selected.has(tx.id)));
+            selection.clear();
+          }}
+          onClear={selection.clear}
+        />
         <TransactionsTable
           transactions={t.rows}
           sort={t}
           onEdit={setEditRow}
           onDelete={setDeleteRow}
           href="/transactions"
+          selected={selection.selected}
+          onToggle={selection.toggle}
+          onToggleAll={selection.toggleAll}
         />
       </div>
       <TablePagination

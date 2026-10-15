@@ -19,6 +19,8 @@ import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/card
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, Th, useDataTable } from "@/components/dashboard/use-table";
 import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
+import { BulkBar, useSelection } from "@/components/dashboard/bulk-bar";
+import { downloadCsv } from "@/lib/export-csv";
 import { VisitBriefDialog } from "@/components/dashboard/visit-brief";
 import type { Field } from "@/components/dashboard/add-dialog";
 import type { Appointment } from "@/data/hospital";
@@ -41,6 +43,7 @@ export function OrdersTable({ rows, onChange }: { rows: Appointment[]; onChange:
   const [editRow, setEditRow] = useState<Appointment | null>(null);
   const [deleteRow, setDeleteRow] = useState<Appointment | null>(null);
   const [briefRow, setBriefRow] = useState<Appointment | null>(null);
+  const selection = useSelection();
   const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.patient, r.doctor],
     filterField: (r) => r.status,
@@ -81,11 +84,41 @@ export function OrdersTable({ rows, onChange }: { rows: Appointment[]; onChange:
           </div>
         </div>
         <div className="overflow-hidden rounded-xl bg-card py-2">
+          <BulkBar
+            count={selection.selected.size}
+            onExport={() =>
+              downloadCsv(
+                "appointments-selected",
+                [
+                  ["ID", "Patient", "Doctor", "Date", "Time", "Status"],
+                  ...rows
+                    .filter((r) => selection.selected.has(r.id))
+                    .map((r) => [r.id, r.patient, r.doctor, r.date, r.time, r.status]),
+                ],
+              )
+            }
+            onDelete={() => {
+              onChange(rows.filter((r) => !selection.selected.has(r.id)));
+              selection.clear();
+            }}
+            onClear={selection.clear}
+          />
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead className="w-12 pl-4">
-                  <Checkbox aria-label="Select all" />
+                  <Checkbox
+                    aria-label="Select all"
+                    checked={
+                      t.rows.length > 0 && t.rows.every((r) => selection.selected.has(r.id))
+                    }
+                    onCheckedChange={(v) =>
+                      selection.toggleAll(
+                        t.rows.map((r) => r.id),
+                        v === true,
+                      )
+                    }
+                  />
                 </TableHead>
                 <Th label="Appt ID" k="id" sort={t} />
                 <Th label="Patient" k="patient" sort={t} />
@@ -108,7 +141,11 @@ export function OrdersTable({ rows, onChange }: { rows: Appointment[]; onChange:
               {t.rows.map((a) => (
                 <TableRow key={a.id} className={a.status === "Cancelled" || a.status === "No Show" ? "opacity-60" : ""}>
                   <TableCell className="pl-4">
-                    <Checkbox aria-label={`Select ${a.id}`} />
+                    <Checkbox
+                      aria-label={`Select ${a.id}`}
+                      checked={selection.selected.has(a.id)}
+                      onCheckedChange={(v) => selection.toggle(a.id, v === true)}
+                    />
                   </TableCell>
                   <TableCell className="font-mono text-muted-foreground">{a.id}</TableCell>
                   <TableCell className="font-medium">{a.patient}</TableCell>
