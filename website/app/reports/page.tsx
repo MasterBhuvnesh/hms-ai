@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { KpiCard, MoreButton, PanelTitle } from "@/components/dashboard/cards";
 import { Shell } from "@/components/dashboard/shell";
+import { DownloadReportButton } from "./download-report-button";
 import { MonthlyRevenue } from "./monthly-revenue";
 import { products } from "@/data/mock";
 import data from "@/data/dashboard.json";
@@ -44,10 +45,7 @@ export default function Reports() {
               {data.date}
             </Button>
           </div>
-          <Button size="lg">
-            <HugeiconsIcon icon={FileExportIcon} size={14} data-icon="inline-start" />
-            Download Report
-          </Button>
+          <DownloadReportButton />
         </div>
       </div>
 
