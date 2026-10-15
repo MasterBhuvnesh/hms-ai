@@ -166,7 +166,7 @@ function IcuWatch({ rows }: { rows: Bed[] }) {
   return (
     <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
-        <PanelTitle title="ICU Watch" />
+        <PanelTitle title="ICU Watch" info="Simulated vitals for demo. Recheck re-rolls deterministic demo values, it is not live monitoring." />
         <MoreButton />
       </div>
       <div className="rounded-xl bg-card p-4">
@@ -200,6 +200,9 @@ function IcuWatch({ rows }: { rows: Bed[] }) {
         ))}
       </div>
       <div className="px-4 py-2.5">
+        <p className="font-mono text-[10px] tracking-wide text-muted-foreground uppercase">
+          Simulated vitals - not live monitoring
+        </p>
         <p
           className={`font-mono text-xs font-medium tracking-wide uppercase ${
             anyCritical ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-500"
