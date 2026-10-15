@@ -1,8 +1,17 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { InformationCircleIcon, MoreHorizontalIcon } from "@hugeicons/core-free-icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Sparkline } from "@/components/dashboard/charts";
 
 export function initials(name: string) {
@@ -22,11 +31,26 @@ export function PanelTitle({ title }: { title: string }) {
   );
 }
 
-export function MoreButton() {
+export function MoreButton({
+  onExport,
+  exportLabel = "Export CSV",
+}: {
+  onExport?: () => void;
+  exportLabel?: string;
+}) {
+  const router = useRouter();
   return (
-    <Button variant="outline" size="icon-sm" aria-label="More options" className="rounded-full border-2 border-comp-border">
-      <HugeiconsIcon icon={MoreHorizontalIcon} size={16} />
-    </Button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon-sm" aria-label="More options" title="More options" className="rounded-full border-2 border-comp-border">
+          <HugeiconsIcon icon={MoreHorizontalIcon} size={16} />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {onExport && <DropdownMenuItem onSelect={onExport}>{exportLabel}</DropdownMenuItem>}
+        <DropdownMenuItem onSelect={() => router.refresh()}>Refresh</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
