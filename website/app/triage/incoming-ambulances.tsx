@@ -29,9 +29,9 @@ const UNITS: Unit[] = [
 
 export function IncomingAmbulances() {
   const [reserved, setReserved] = useState<Set<string>>(new Set());
-  const emergencyAvailable = beds.filter(
-    (b) => b.ward === "Emergency" && b.status === "Available",
-  ).length;
+  const emergencyAvailable =
+    beds.filter((b) => b.ward === "Emergency" && b.status === "Available").length -
+    reserved.size;
 
   return (
     <Card className="gap-0 bg-muted/50 p-1 ring-0 shadow-sm dark:bg-muted">
@@ -69,16 +69,44 @@ export function IncomingAmbulances() {
                       <StatusBadge status={u.severity} />
                     </TableCell>
                     <TableCell className="pr-4 text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={isReserved}
-                        onClick={() =>
-                          setReserved((prev) => new Set(prev).add(u.unit))
-                        }
-                      >
-                        {isReserved ? "Bed reserved" : "Reserve bed"}
-                      </Button>
+                      {isReserved ? (
+                        <div className="flex items-center justify-end gap-2">
+                          <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">
+                            Bed reserved
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            aria-label={`Cancel reservation for ${u.unit}`}
+                            title="Cancel bed reservation"
+                            onClick={() =>
+                              setReserved((prev) => {
+                                const next = new Set(prev);
+                                next.delete(u.unit);
+                                return next;
+                              })
+                            }
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={emergencyAvailable <= 0}
+                          title={
+                            emergencyAvailable <= 0
+                              ? "No emergency beds available"
+                              : `Reserve one of ${emergencyAvailable} available emergency beds`
+                          }
+                          onClick={() =>
+                            setReserved((prev) => new Set(prev).add(u.unit))
+                          }
+                        >
+                          Reserve bed
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 );
