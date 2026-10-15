@@ -15,6 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
+import { BulkBar, useSelection } from "@/components/dashboard/bulk-bar";
+import { downloadCsv } from "@/lib/export-csv";
 import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
 import { TablePagination } from "@/components/dashboard/table-pagination";
 import { FilterPills, Th, useDataTable } from "@/components/dashboard/use-table";
@@ -33,6 +35,7 @@ export function TicketsTable({
   const [deleteKey, setDeleteKey] = useState<string | null>(null);
   const editing = rows.find((r) => r.id === editKey) ?? null;
   const deleting = rows.find((r) => r.id === deleteKey) ?? null;
+  const selection = useSelection();
   const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.customer, r.subject],
     filterField: (r) => r.status,
@@ -73,11 +76,41 @@ export function TicketsTable({
         </div>
       </div>
       <div className="overflow-hidden rounded-xl bg-card py-2">
+        <BulkBar
+          count={selection.selected.size}
+          onExport={() =>
+            downloadCsv(
+              "tickets-selected",
+              [
+                ["ID", "Customer", "Subject", "Priority", "Status", "Updated"],
+                ...rows
+                  .filter((r) => selection.selected.has(r.id))
+                  .map((r) => [r.id, r.customer, r.subject, r.priority, r.status, r.updated]),
+              ],
+            )
+          }
+          onDelete={() => {
+            onChange(rows.filter((r) => !selection.selected.has(r.id)));
+            selection.clear();
+          }}
+          onClear={selection.clear}
+        />
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-12 pl-4">
-                <Checkbox aria-label="Select all" />
+                <Checkbox
+                  aria-label="Select all"
+                  checked={
+                    t.rows.length > 0 && t.rows.every((r) => selection.selected.has(r.id))
+                  }
+                  onCheckedChange={(v) =>
+                    selection.toggleAll(
+                      t.rows.map((r) => r.id),
+                      v === true,
+                    )
+                  }
+                />
               </TableHead>
               <Th label="ID" k="id" sort={t} />
               <Th label="Patient / Ward" k="customer" sort={t} />
@@ -104,7 +137,11 @@ export function TicketsTable({
                 className={ticket.status === "Resolved" ? "opacity-60" : ""}
               >
                 <TableCell className="pl-4">
-                  <Checkbox aria-label={`Select ${ticket.id}`} />
+                  <Checkbox
+                    aria-label={`Select ${ticket.id}`}
+                    checked={selection.selected.has(ticket.id)}
+                    onCheckedChange={(v) => selection.toggle(ticket.id, v === true)}
+                  />
                 </TableCell>
                 <TableCell className="font-mono text-muted-foreground">{ticket.id}</TableCell>
                 <TableCell className="font-medium">{ticket.customer}</TableCell>
