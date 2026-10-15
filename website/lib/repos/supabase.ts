@@ -247,3 +247,28 @@ export async function deleteBed(id: string): Promise<void> {
   const { error } = await sb.from("beds").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+function billAmountValue(amount: string): number {
+  return Number(String(amount).replace(/[^0-9.]/g, "")) || 0;
+}
+
+export async function addBill(b: {
+  id: string;
+  patient: string;
+  date: string;
+  department: string;
+  amount: string;
+  status: string;
+}): Promise<void> {
+  const sb = requireSupabase();
+  const { error } = await sb.from("bills").insert({
+    id: b.id,
+    patient_name: b.patient,
+    date: b.date,
+    department: b.department,
+    amount_text: b.amount,
+    amount_value: billAmountValue(b.amount),
+    status: b.status,
+  });
+  if (error) throw new Error(error.message);
+}

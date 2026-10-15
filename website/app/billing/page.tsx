@@ -5,7 +5,15 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { AiMagicIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -16,8 +24,11 @@ import {
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
 import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
+import { useCurrentRole } from "@/components/dashboard/use-current-role";
 import { InvoicesTable } from "./invoices-table";
 import { bills, DEPARTMENTS, type Bill } from "@/data/hospital";
+import { getSupabase } from "@/lib/supabase";
+import { addBill } from "@/lib/repos/supabase";
 
 const planFeatures = [
   "Unlimited patients and appointments",
@@ -153,24 +164,73 @@ function ElectivePriceEstimator({ onCreate }: { onCreate: (amount: string) => vo
 }
 
 export default function Billing() {
+  const role = useCurrentRole();
   const [billsState, setBillsState] = useState<Bill[]>(bills);
+  const [manageOpen, setManageOpen] = useState(false);
+  const [methods, setMethods] = useState({ Cash: true, UPI: true, Card: true });
+  const [duesInsight, setDuesInsight] = useState<string | null>(null);
+  const [duesLoading, setDuesLoading] = useState(false);
 
-  function handleEstimatorCreate(amount: string) {
+  function nextBillId(): string {
     const maxNum = billsState.reduce(
       (m, b) => Math.max(m, Number(b.id.replace(/\D/g, "")) || 0),
       7000,
     );
-    setBillsState((r) => [
-      {
-        id: `BILL-${maxNum + 1}`,
-        patient: "Elective Patient",
-        date: "6 Nov 2025",
-        department: "General",
-        amount,
-        status: "Pending",
-      },
-      ...r,
-    ]);
+    return `BILL-${maxNum + 1}`;
+  }
+
+  function persistBill(bill: Bill) {
+    if (!getSupabase()) return;
+    void addBill({
+      id: bill.id,
+      patient: bill.patient,
+      date: bill.date,
+      department: bill.department,
+      amount: bill.amount,
+      status: bill.status,
+    }).catch(() => {});
+  }
+
+  function handleEstimatorCreate(amount: string) {
+    const bill: Bill = {
+      id: nextBillId(),
+      patient: "Elective Patient",
+      date: "6 Nov 2025",
+      department: "General",
+      amount,
+      status: "Pending",
+    };
+    setBillsState((r) => [bill, ...r]);
+    persistBill(bill);
+  }
+
+  async function getDuesFollowUp() {
+    if (duesLoading) return;
+    setDuesLoading(true);
+    try {
+      const dues = billsState.filter((b) => b.status !== "Paid").slice(0, 10);
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role,
+          user: "staff",
+          messages: [
+            {
+              role: "user",
+              content: `List the top dues follow-ups in priority order, one short line each: ${dues.map((b) => `${b.id} ${b.patient} ${b.amount} ${b.status}`).join("; ") || "no pending dues"}.`,
+            },
+          ],
+        }),
+      });
+      const payload = (await res.json()) as { reply?: string; error?: string };
+      if (!res.ok || !payload.reply) throw new Error(payload.error || "ai_failed");
+      setDuesInsight(payload.reply);
+    } catch {
+      setDuesInsight("AI is unavailable right now. Please try again later.");
+    } finally {
+      setDuesLoading(false);
+    }
   }
 
   return (
@@ -188,21 +248,16 @@ export default function Billing() {
             { name: "status", label: "Status", options: ["Paid", "Pending", "Overdue", "Partial"] },
           ]}
           onSubmit={(v) => {
-            const maxNum = billsState.reduce(
-              (m, b) => Math.max(m, Number(b.id.replace(/\D/g, "")) || 0),
-              7000,
-            );
-            setBillsState((r) => [
-              {
-                id: `BILL-${maxNum + 1}`,
-                patient: v.patient,
-                date: "6 Nov 2025",
-                department: v.department,
-                amount: money(v.amount),
-                status: v.status as Bill["status"],
-              },
-              ...r,
-            ]);
+            const bill: Bill = {
+              id: nextBillId(),
+              patient: v.patient,
+              date: "6 Nov 2025",
+              department: v.department,
+              amount: money(v.amount),
+              status: v.status as Bill["status"],
+            };
+            setBillsState((r) => [bill, ...r]);
+            persistBill(bill);
           }}
           trigger={
             <Button size="lg">
@@ -255,19 +310,28 @@ export default function Billing() {
           <div className="flex-1 space-y-4 rounded-xl bg-card p-4">
             <div className="flex items-center justify-between gap-3 rounded-xl border p-3">
               <div>
-                <p className="font-mono text-sm font-medium">Cash + UPI + Card</p>
+                <p className="font-mono text-sm font-medium">
+                  {Object.entries(methods)
+                    .filter(([, on]) => on)
+                    .map(([m]) => m)
+                    .join(" + ") || "No methods"}
+                </p>
                 <p className="text-xs text-muted-foreground">Counter 1 - Billing Staff</p>
               </div>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => setManageOpen(true)}>
                 Manage
               </Button>
             </div>
-            <div className="flex items-center gap-2.5 rounded-xl bg-muted p-2 text-sm text-muted-foreground">
-              <span className="flex size-7 items-center justify-center rounded-lg border bg-card">
-                <HugeiconsIcon icon={AiMagicIcon} size={14} />
+            <button
+              onClick={() => void getDuesFollowUp()}
+              disabled={duesLoading}
+              className="flex w-full items-center gap-2.5 rounded-xl bg-muted p-2 text-left text-sm text-muted-foreground hover:bg-muted/70 disabled:opacity-60"
+            >
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border bg-card">
+                <HugeiconsIcon icon={AiMagicIcon} size={14} className={duesLoading ? "animate-pulse" : undefined} />
               </span>
-              Get AI dues follow-up list
-            </div>
+              {duesLoading ? "Analyzing dues..." : (duesInsight ?? "Get AI dues follow-up list")}
+            </button>
           </div>
         </Card>
 
@@ -275,6 +339,37 @@ export default function Billing() {
 
         <InvoicesTable rows={billsState} onChange={setBillsState} />
       </div>
+
+      <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Payment methods</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Choose which payment methods Counter 1 accepts.
+          </p>
+          <div className="space-y-2.5">
+            {(Object.keys(methods) as (keyof typeof methods)[]).map((m) => (
+              <label key={m} className="flex cursor-pointer items-center gap-2.5 text-sm">
+                <Checkbox
+                  checked={methods[m]}
+                  onCheckedChange={(v) =>
+                    setMethods((prev) => ({ ...prev, [m]: v === true }))
+                  }
+                  aria-label={`Accept ${m}`}
+                />
+                {m}
+              </label>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setManageOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => setManageOpen(false)}>Save methods</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Shell>
   );
 }
