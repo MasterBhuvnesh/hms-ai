@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Card } from "@/components/ui/card";
@@ -38,6 +39,7 @@ const editFields: Field[] = [
 export function CustomersTable({ rows, onChange }: { rows: Patient[]; onChange: (rows: Patient[]) => void }) {
   const [editRow, setEditRow] = useState<Patient | null>(null);
   const [deleteRow, setDeleteRow] = useState<Patient | null>(null);
+  const searchParams = useSearchParams();
   const t = useDataTable(rows, {
     searchFields: (r) => [r.id, r.name, r.doctor, r.department],
     filterField: (r) => r.status,
@@ -48,6 +50,12 @@ export function CustomersTable({ rows, onChange }: { rows: Patient[]; onChange: 
       status: (r) => r.status,
     },
   });
+
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) t.setQuery(q);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

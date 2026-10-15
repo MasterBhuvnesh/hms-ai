@@ -1,11 +1,8 @@
 import Image from "next/image";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { InboxIcon, Notification01Icon, Search01Icon } from "@hugeicons/core-free-icons";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ThemeToggle } from "@/components/dashboard/theme-toggle";
+import { TopbarControls } from "@/components/dashboard/topbar-controls";
 import { AiAssistant } from "@/components/dashboard/ai-assistant";
 import { AccessGate } from "@/components/dashboard/access-gate";
 import { ACTIVE_HREFS } from "@/lib/permissions";
@@ -37,27 +34,8 @@ export function Shell({
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <div className="relative hidden md:block">
-              <HugeiconsIcon
-                icon={Search01Icon}
-                size={16}
-                className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
-              />
-              <Input
-                placeholder="Search..."
-                className="h-9 w-72 rounded-lg border-transparent bg-muted/60 pr-12 pl-9 shadow-none"
-              />
-              <kbd className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
-                ⌘ K
-              </kbd>
-            </div>
-            <Button variant="ghost" size="icon-lg" className="hidden border-2 border-comp-border sm:inline-flex" aria-label="Notifications">
-              <HugeiconsIcon icon={Notification01Icon} size={18} />
-            </Button>
+            <TopbarControls />
             <ThemeToggle />
-            <Button variant="ghost" size="icon-lg" className="hidden border-2 border-comp-border sm:inline-flex" aria-label="Inbox">
-              <HugeiconsIcon icon={InboxIcon} size={18} />
-            </Button>
             <Image
               src="/meow.png"
               alt={data.user.name}

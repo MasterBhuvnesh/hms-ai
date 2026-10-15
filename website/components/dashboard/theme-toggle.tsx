@@ -11,6 +11,7 @@ export function ThemeToggle() {
       size="icon-lg"
       className="border-2 border-comp-border"
       aria-label="Toggle dark mode"
+      title="Toggle dark mode"
       onClick={() => {
         const dark = document.documentElement.classList.toggle("dark");
         localStorage.setItem("theme", dark ? "dark" : "light");
