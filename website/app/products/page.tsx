@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/dashboard/cards";
 import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
+import { downloadCsv } from "@/lib/export-csv";
 import { ProductsTable } from "./products-table";
 import { StewardshipReview } from "./stewardship-review";
 import { medicines as medicinesSeed, type Medicine } from "@/data/hospital";
@@ -25,7 +26,20 @@ export default function Products() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Pharmacy</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" size="lg" className="bg-card">
+          <Button
+            variant="outline"
+            size="lg"
+            className="bg-card"
+            onClick={() =>
+              downloadCsv(
+                "medicines",
+                [
+                  ["Name", "SKU", "Category", "Price", "Stock", "Status", "Sold"],
+                  ...rows.map((r) => [r.name, r.sku, r.category, r.price, r.stock, r.status, r.sold]),
+                ],
+              )
+            }
+          >
             <HugeiconsIcon icon={FileExportIcon} size={14} data-icon="inline-start" />
             Export CSV
           </Button>

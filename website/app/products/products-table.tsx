@@ -15,6 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
+import { BulkBar, useSelection } from "@/components/dashboard/bulk-bar";
+import { downloadCsv } from "@/lib/export-csv";
 import { money } from "@/components/dashboard/add-dialog";
 import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
 import { TablePagination } from "@/components/dashboard/table-pagination";
@@ -40,6 +42,7 @@ export function ProductsTable({ rows, onChange }: { rows: Medicine[]; onChange: 
   const [editSku, setEditSku] = useState<string | null>(null);
   const [deleteSku, setDeleteSku] = useState<string | null>(null);
   const editRow = rows.find((r) => r.sku === editSku) ?? null;
+  const selection = useSelection();
 
   function saveEdit(values: Record<string, string>) {
     if (!editSku) return;
@@ -88,11 +91,41 @@ export function ProductsTable({ rows, onChange }: { rows: Medicine[]; onChange: 
         </div>
       </div>
       <div className="overflow-hidden rounded-xl bg-card py-2">
+        <BulkBar
+          count={selection.selected.size}
+          onExport={() =>
+            downloadCsv(
+              "medicines-selected",
+              [
+                ["Name", "SKU", "Category", "Price", "Stock", "Status", "Sold"],
+                ...rows
+                  .filter((r) => selection.selected.has(r.sku))
+                  .map((r) => [r.name, r.sku, r.category, r.price, r.stock, r.status, r.sold]),
+              ],
+            )
+          }
+          onDelete={() => {
+            onChange(rows.filter((r) => !selection.selected.has(r.sku)));
+            selection.clear();
+          }}
+          onClear={selection.clear}
+        />
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-12 pl-4">
-                <Checkbox aria-label="Select all" />
+                <Checkbox
+                  aria-label="Select all"
+                  checked={
+                    t.rows.length > 0 && t.rows.every((r) => selection.selected.has(r.sku))
+                  }
+                  onCheckedChange={(v) =>
+                    selection.toggleAll(
+                      t.rows.map((r) => r.sku),
+                      v === true,
+                    )
+                  }
+                />
               </TableHead>
               <Th label="Medicine" k="name" sort={t} />
               <Th label="SKU" k="sku" sort={t} />
@@ -119,7 +152,11 @@ export function ProductsTable({ rows, onChange }: { rows: Medicine[]; onChange: 
               return (
                 <TableRow key={product.sku} className={outOfStock ? "opacity-60" : ""}>
                   <TableCell className="pl-4">
-                    <Checkbox aria-label={`Select ${product.name}`} />
+                    <Checkbox
+                      aria-label={`Select ${product.name}`}
+                      checked={selection.selected.has(product.sku)}
+                      onCheckedChange={(v) => selection.toggle(product.sku, v === true)}
+                    />
                   </TableCell>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell className="font-mono text-muted-foreground">{product.sku}</TableCell>
