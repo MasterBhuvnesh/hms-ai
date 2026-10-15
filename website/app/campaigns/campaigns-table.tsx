@@ -15,6 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MoreButton, PanelTitle, StatusBadge } from "@/components/dashboard/cards";
+import { BulkBar, useSelection } from "@/components/dashboard/bulk-bar";
+import { downloadCsv } from "@/lib/export-csv";
 import { money } from "@/components/dashboard/add-dialog";
 import { DeleteConfirm, EditDialog, RowActions } from "@/components/dashboard/row-actions";
 import { TablePagination } from "@/components/dashboard/table-pagination";
@@ -32,6 +34,7 @@ export function CampaignsTable({
   const [deleteKey, setDeleteKey] = useState<string | null>(null);
   const editing = rows.find((r) => r.name === editKey) ?? null;
   const deleting = rows.find((r) => r.name === deleteKey) ?? null;
+  const selection = useSelection();
   const t = useDataTable(rows, {
     searchFields: (r) => [r.name, r.channel],
     filterField: (r) => r.status,
@@ -73,11 +76,41 @@ export function CampaignsTable({
         </div>
       </div>
       <div className="overflow-hidden rounded-xl bg-card py-2">
+        <BulkBar
+          count={selection.selected.size}
+          onExport={() =>
+            downloadCsv(
+              "campaigns-selected",
+              [
+                ["Name", "Channel", "Status", "Budget", "Spent", "Reached", "Coverage"],
+                ...rows
+                  .filter((r) => selection.selected.has(r.name))
+                  .map((r) => [r.name, r.channel, r.status, r.budget, r.spent, r.reached, r.coverage]),
+              ],
+            )
+          }
+          onDelete={() => {
+            onChange(rows.filter((r) => !selection.selected.has(r.name)));
+            selection.clear();
+          }}
+          onClear={selection.clear}
+        />
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-12 pl-4">
-                <Checkbox aria-label="Select all" />
+                <Checkbox
+                  aria-label="Select all"
+                  checked={
+                    t.rows.length > 0 && t.rows.every((r) => selection.selected.has(r.name))
+                  }
+                  onCheckedChange={(v) =>
+                    selection.toggleAll(
+                      t.rows.map((r) => r.name),
+                      v === true,
+                    )
+                  }
+                />
               </TableHead>
               <Th label="Campaign" k="name" sort={t} />
               <Th label="Channel" k="channel" sort={t} />
@@ -105,7 +138,11 @@ export function CampaignsTable({
                 className={campaign.status === "Ended" ? "opacity-60" : ""}
               >
                 <TableCell className="pl-4">
-                  <Checkbox aria-label={`Select ${campaign.name}`} />
+                  <Checkbox
+                    aria-label={`Select ${campaign.name}`}
+                    checked={selection.selected.has(campaign.name)}
+                    onCheckedChange={(v) => selection.toggle(campaign.name, v === true)}
+                  />
                 </TableCell>
                 <TableCell className="font-medium">{campaign.name}</TableCell>
                 <TableCell>{campaign.channel}</TableCell>

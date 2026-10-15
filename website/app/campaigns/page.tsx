@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/dashboard/cards";
 import { AddDialog, money } from "@/components/dashboard/add-dialog";
 import { Shell } from "@/components/dashboard/shell";
+import { downloadCsv } from "@/lib/export-csv";
 import { CampaignsTable } from "./campaigns-table";
 import { healthCampaigns as campaignsSeed, type HealthCampaign } from "@/data/hospital";
 
@@ -53,7 +54,20 @@ export default function HealthCampaigns() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Health Campaigns</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" size="lg" className="bg-card">
+          <Button
+            variant="outline"
+            size="lg"
+            className="bg-card"
+            onClick={() =>
+              downloadCsv(
+                "campaigns",
+                [
+                  ["Name", "Channel", "Status", "Budget", "Spent", "Reached", "Coverage"],
+                  ...rows.map((r) => [r.name, r.channel, r.status, r.budget, r.spent, r.reached, r.coverage]),
+                ],
+              )
+            }
+          >
             <HugeiconsIcon icon={FileExportIcon} size={14} data-icon="inline-start" />
             Export
           </Button>
