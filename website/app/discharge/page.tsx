@@ -298,7 +298,7 @@ export default function DischargePage() {
   ];
 
   return (
-    <Shell breadcrumb="Discharge" active="Discharge">
+    <Shell breadcrumb="Discharge" active="Discharges">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium tracking-tight">Discharge Summaries</h1>
       </div>
