@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import type { IconSvgElement } from "@hugeicons/react";
@@ -82,6 +83,10 @@ const sections: { title: string; items: NavItem[] }[] = [
   },
 ];
 
+const SCROLL_KEY = "sidebar-nav-scroll";
+
+// Scroll policy: preserve the sidebar position across tab changes within the
+// session. The main content area always starts at the top on navigation.
 export function Sidebar({
   active = "Dashboard",
   className = "hidden lg:flex",
@@ -90,12 +95,18 @@ export function Sidebar({
   className?: string;
 }) {
   const role = useCurrentRole();
+  const navRef = useRef<HTMLElement>(null);
   const visibleSections = sections
     .map((section) => ({
       ...section,
       items: section.items.filter((item) => canAccess(item.href, role)),
     }))
     .filter((section) => section.items.length > 0);
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem(SCROLL_KEY);
+    if (saved && navRef.current) navRef.current.scrollTop = Number(saved) || 0;
+  }, []);
 
   return (
     <aside className={`${className} w-64 shrink-0 flex-col border-r bg-sidebar`}>
@@ -110,7 +121,14 @@ export function Sidebar({
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-4 pb-4">
+      <nav
+        ref={navRef}
+        onScroll={() => {
+          const el = navRef.current;
+          if (el) sessionStorage.setItem(SCROLL_KEY, String(el.scrollTop));
+        }}
+        className="flex-1 overflow-y-auto px-4 pb-4"
+      >
         {visibleSections.map((section, i) => (
           <div key={section.title} className={i > 0 ? "mt-4 border-t pt-4" : ""}>
             <p className="px-2 pb-2 text-xs text-foreground">{section.title}</p>
