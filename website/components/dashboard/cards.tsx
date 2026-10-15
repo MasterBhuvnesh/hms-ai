@@ -12,7 +12,44 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Sparkline } from "@/components/dashboard/charts";
+
+const PANEL_INFO: Record<string, string> = {
+  Inbox: "Patient conversations. Select a thread to read and reply.",
+  "Admissions Breakdown": "Patients by department for the selected timeframe.",
+  "All Beds": "Beds grouped by ward and status. Use actions to edit or delete.",
+  "All Patients": "Registered patients. Search, filter, edit, or remove entries.",
+  "All Appointments": "Scheduled visits. Select rows for bulk export or delete.",
+  "Monthly Revenue": "Revenue per month for the selected year.",
+};
+
+export function PanelTitle({ title, info }: { title: string; info?: string }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <h2 className="font-mono text-sm font-medium tracking-wide uppercase text-foreground/50">{title}</h2>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            aria-label={`About ${title}`}
+            title={`About ${title}`}
+            className="rounded text-muted-foreground hover:text-foreground"
+          >
+            <HugeiconsIcon icon={InformationCircleIcon} size={14} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="max-w-60 text-sm">
+          {info ?? PANEL_INFO[title] ?? `Details about ${title}.`}
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}
 
 export function initials(name: string) {
   return name
@@ -20,15 +57,6 @@ export function initials(name: string) {
     .map((w) => w[0])
     .slice(0, 2)
     .join("");
-}
-
-export function PanelTitle({ title }: { title: string }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <h2 className="font-mono text-sm font-medium tracking-wide uppercase text-foreground/50">{title}</h2>
-      <HugeiconsIcon icon={InformationCircleIcon} size={14} className="text-muted-foreground" />
-    </div>
-  );
 }
 
 export function MoreButton({
